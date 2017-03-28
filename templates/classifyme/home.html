@@ -1,0 +1,41 @@
+{% extends 'classifyme/base.html' %}
+{% block content %}
+<div class="content container">
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="navbar">
+        <i class="glyphicon glyphicon-arrow-left"></i>
+        <a href="{% url 'admin' %}">Halaman Administrasi</a>
+      </div>
+
+      <div class="tentang">
+        <h4><strong>Tentang Aplikasi</strong></h4>
+        <p id="isi">ClassifyMe! adalah aplikasi yang dibuat khusus untuk mengklasifikasikan ulasan buku ke dalam ulasan positif dan negatif dengan menggunakan teknik pre-processing pada text mining.</p>
+        <p id="isi">Aplikasi ini dibuat oleh Adinda Octadia Putri, mahasiswi Universitas Gunadarma tahun 2013 sebagai syarat dalam mencapai gelar Sarjana Strata Satu (S1).</p>
+      </div>
+
+      <div class="tentang">
+        <h4><strong>Petunjuk Penggunaan</strong></h4>
+        <ol class="cara">
+          <li id="isi">Untuk menggunakan aplikasi, klik tombol "Mulai" yang ada pada bagian paling bawah halaman ini. Jika tombol tidak tertera maka Anda harus melakukan <em>login</em> terlebih dahulu di halaman administrasi. Setelah itu Anda bisa kembali ke halaman ini dengan mengetik http://127.0.0.1:8000/classifyme/</br></li>
+          <li id="isi">Isi identitas buku sesuai dengan kolom yang sudah disediakan.</br></li>
+          <li id="isi">Import ulasan-ulasan buku yang akan diklasifikasikan. Ulasan harus disimpan dalam format .txt terlebih dulu.</br></li>
+          <li id="isi">Klik tombol "Buka File" untuk menampilkan semua ulasan yang sudah di import.</br></li>
+          <li id="isi">Setelah semua ulasan ditampilkan, klik tombol "Proses" untuk memulai proses pre-processing.</br></li>
+          <li id="isi">Setelah hasil pre-processing ditampilkan, klik tombol "Klasifikasi" untuk mengetahui hasil klasifikasi ulasan.</br></li>
+          <li id="isi">Setelah hasil klasifikasi ditampilkan, klik tombol "Simpan".</br></li>
+        </ol>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+    <div class="button">
+      {% if user.is_authenticated %}
+        <a class="btn btn-default" href="{% url 'input' %}" role="button">Mulai</a>
+      {% endif %}
+    </div>
+
+{% endblock %}

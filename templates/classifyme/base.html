@@ -1,0 +1,23 @@
+{% load staticfiles %}
+<html>
+
+  <head>
+    <title>ClassifyMe!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'classifyme.css' %}">
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>ClassifyMe!</h1>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <div class="footer">
+        <p>&copy; 2017 by ADN | Narahubung : adindaoctadia@gmail.com</p>
+    </div>
+  </body>
+
+</html>

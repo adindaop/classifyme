@@ -1,0 +1,64 @@
+body {
+  font-family: 'Arial';
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  margin-top: 0px;
+  margin-bottom: 20px;
+  background-color: lightgrey;
+  padding: 8px 8px;
+}
+
+.navbar {
+  color: grey;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.row {
+  display: table;
+  width: 100%;
+}
+
+h4 {
+  font-size: 20px;
+  text-align: center;
+  color: black;
+}
+
+.tentang {
+  width: 50%;
+  float: left;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.cara li {
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+#isi {
+  font-size: 15px;
+}
+
+/*.book-form {
+  margin-top: 50px 50px 50px 500px;
+}*/
+
+.button {
+  margin: 10px 50px 50px 560px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  font-family: 'Century Gothic';
+  font-size: 13px;
+  margin-top: 30px;
+}

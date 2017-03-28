@@ -1,0 +1,23 @@
+{% extends 'classifyme/base.html' %}
+{% block content %}
+
+<div class="content container">
+  <div class="row">
+    <div class="col-md-12">
+
+        <h4><strong>Input Identitas Buku</strong></h4>
+          <form method="POST" class="book-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+          </form>
+
+        <div class="button">
+          {% if user.is_authenticated %}
+            <button class="btn btn-default" type="submit">Simpan</button>
+          {% endif %}
+        </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
