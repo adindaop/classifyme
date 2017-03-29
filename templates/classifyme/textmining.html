@@ -1,0 +1,20 @@
+{% extends 'classifyme/base.html' %}
+{% block content %}
+  <h4>Proses Text Mining</h4>
+
+  <h4>{{ buku.judul }}</h4>
+
+  <h5>Isi File</h5>
+
+    <div>
+      <textarea class="file">{{ buku.ulasan }}</textarea>
+    </div>
+
+    <h5>Klik tombol Proses untuk melanjutkan proses klasifikasi.</h5>
+
+<div class="button">
+  {% if user.is_authenticated %}
+    <a class="btn btn-default" href="#" role="button">Proses</a>
+  {% endif %}
+</div>
+{% endblock %}
