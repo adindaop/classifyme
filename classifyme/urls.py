@@ -8,6 +8,6 @@ urlpatterns = [
     url(r'^classifyme/$', views.home, name='home'),
     #/classifyme/input/
     url(r'^classifyme/input/$', views.input, name='input'),
-    #/classifyme/input/1
+    #/classifyme/input/1/
     url(r'^classifyme/input/(?P<buku_id>\d+)/$', views.textmining, name='textmining'),
 ]

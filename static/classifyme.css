@@ -29,13 +29,17 @@ h4 {
   color: black;
 }
 
+h5 {
+  font-size: 15px;
+  color: grey;
+}
+
 .tentang {
   width: 50%;
   float: left;
   padding: 10px;
   box-sizing: border-box;
   text-align: center;
-  margin-top: 5px;
 }
 
 .cara li {
@@ -48,18 +52,33 @@ h4 {
 }
 
 .book-form label, .book-form input {
-  margin-top: 50px 50px 50px 500px;
+  margin-left: 290px;
   width: 50%;
 }
 
+.file {
+  width: 100%;
+  height: 300px;
+}
+
+#get {
+  font-size: 20px;
+  text-align: left;
+  color: black;
+}
+
 .button {
-  margin: 10px 50px 50px 560px;
+  margin: 20px 50px 50px 600px;
+}
+
+.button1 {
+  margin-left: 530px;
 }
 
 .footer {
   position: fixed;
   bottom: 0;
   font-family: 'Century Gothic';
-  font-size: 13px;
+  font-size: 12px;
   margin-top: 30px;
 }
