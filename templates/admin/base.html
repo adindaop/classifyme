@@ -72,6 +72,10 @@
     <div id="content" class="{% block coltype %}colM{% endblock %}">
 
         {% block pretitle %}{% endblock %}
+        <div style="text-align: right">
+          <a href="{% url 'home' %}">Halaman Klasifikasi</a>
+          <i class="glyphicon glyphicon-arrow-right"></i>
+        </div>
         {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
         {% block content %}
         {% block object-tools %}{% endblock %}
@@ -80,10 +84,7 @@
         {% block sidebar %}{% endblock %}
         <br class="clear" />
 
-      <div style="text-align: right">
-        <a href="{% url 'home' %}">Halaman Klasifikasi</a>
-        <i class="glyphicon glyphicon-arrow-right"></i>
-      </div>
+
     </div>
     <!-- END Content -->
 

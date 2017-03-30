@@ -6,7 +6,16 @@ class BukuAdmin(admin.ModelAdmin):
     list_filter = ('penulis', 'judul', 'tahun_terbit')
     search_fields = ['penulis', 'judul']
     list_per_page = 20
+
+    def ulasan(self):
+        if self.ulasan:
+            return u'<text src="%s"/>' % self.ulasan.url
+        else:
+            return '(Ulasan tidak ditemukan)'
+            
 admin.site.register(Buku,BukuAdmin)
+
+
 
 class KlasifikasiAdmin(admin.ModelAdmin):
     list_display = ['judul', 'hasil_klasifikasi']
