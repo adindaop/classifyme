@@ -2,7 +2,6 @@ import csv
 from django.shortcuts import render, get_object_or_404
 from .forms import BukuForm
 from .models import Buku
-from django.shortcuts import redirect
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.util import ngrams
@@ -38,7 +37,7 @@ def textmining(request, buku_id):
 def klasifikasi(request, buku_id):
     context = {}
     selected_buku = Buku.objects.get(id=int(buku_id))
-    context['judul'] = selected_buku
+    context['buku'] = selected_buku
 
     ulasan = ''
     with open('media/{}'.format(selected_buku.ulasan)) as csvfile:

@@ -9,7 +9,6 @@
         <br>
         <br>
 
-
         <div class="content container">
           <div class="row">
             <div class="col-md-3">
@@ -24,14 +23,7 @@
         {% if user.is_authenticated %}
           <a href="{% url 'classifyme:admin' %}" class="btn btn-default" role="button">Tambah Data Buku</a>
         {% endif %}
-          <!--<form method="POST" class="book-form">
-            {% csrf_token %}
-            {{ form.as_p }}
-              <br>
-              {% if user.is_authenticated %}
-                <button type="submit" class="button1">Simpan</button>
-              {% endif %}
-        </form>-->
+
     </div>
   </div>
 </div>

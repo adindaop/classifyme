@@ -5,7 +5,7 @@
     <div class="col-md-12">
 
         <h4><strong>Proses Klasifikasi</strong></h4><br>
-        <h5 id="get">Judul Buku : {{ judul.judul }}</h4>
+        <h5 id="get">Judul Buku : {{ buku.judul }}</h4>
         <h5>Hasil Text Mining</h5>
 
           <div>
@@ -14,9 +14,9 @@
 
         <h5>Klik tombol Hasil untuk melanjutkan proses klasifikasi.</h5><br>
 
-      <div>
+      <div class="button2">
         {% if user.is_authenticated %}
-          <button type="submit" class="button1">Hasil</button>
+          <a href="{% url 'classifyme:hasil' buku.id %}" class="btn btn-default" role="button">Lihat Hasil</a>
         {% endif %}
       </div>
     </div>

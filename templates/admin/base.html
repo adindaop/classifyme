@@ -51,6 +51,7 @@
         {% endblock %}
         {% block nav-global %}{% endblock %}
     </div>
+
     <!-- END Header -->
     {% block breadcrumbs %}
     <div class="breadcrumbs">
@@ -78,15 +79,17 @@
         {{ content }}
         {% endblock %}
         {% block sidebar %}{% endblock %}
+        {% if request.user.is_authenticated %}
         <div style="text-align: right">
           <a href="{% url 'classifyme:home' %}">Halaman Klasifikasi</a>
           <i class="glyphicon glyphicon-arrow-right"></i><br>
         </div>
+        {% endif %}
         <br class="clear" />
-
-
     </div>
     <!-- END Content -->
+
+
 
     {% block footer %}<div id="footer"></div>{% endblock %}
 </div>
