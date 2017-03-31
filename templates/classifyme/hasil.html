@@ -1,0 +1,21 @@
+{% extends 'classifyme/base.html' %}
+{% block content %}
+<div class="content container">
+  <div class="row">
+    <div class="col-md-12">
+
+        <h4><strong>Hasil Klasifikasi</strong></h4><br><br><br>
+
+        <h5 id="hasil">Buku {{ judul.judul }} termasuk dalam kelas : </h5><br>
+
+        <h5 style="text-align: center">Klik tombol Simpan untuk menyimpan hasil klasifikasi dan keluar dari aplikasi.</h5>
+
+      <div class="button2">
+        {% if user.is_authenticated %}
+          <a href="{% url 'admin' %}" class="btn btn-default" role="button">Simpan</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

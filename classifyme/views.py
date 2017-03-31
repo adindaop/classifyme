@@ -1,9 +1,10 @@
+import csv
 from django.shortcuts import render, get_object_or_404
 from .forms import BukuForm
 from .models import Buku
 from django.shortcuts import redirect
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+from nltk.tokenize import word_tokenize
+
 
 def admin(request):
     return render(request, admin.site.urls, {})
@@ -21,5 +22,26 @@ def textmining(request, buku_id):
     buku = get_object_or_404(Buku, id=buku_id)
     context = {}
     selected_buku = Buku.objects.get(id=int(buku_id))
-    context['judul', 'ulasan'] = selected_buku
+    context['judul'] = selected_buku
+
+    print(selected_buku.ulasan)
+
+    ulasan = ''
+    with open('media/{}'.format(selected_buku.ulasan)) as csvfile:
+        csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
+        for row in csvreader:
+            ulasan += row['Review']
+    context['ulasan'] = ulasan
     return render(request, 'classifyme/textmining.html', context)
+
+def klasifikasi(request, buku_id):
+    context = {}
+    selected_buku = Buku.objects.get(id=int(buku_id))
+    context['judul'] = selected_buku
+    return render(request, 'classifyme/klasifikasi.html', context)
+
+def hasil(request, buku_id):
+    context = {}
+    selected_buku = Buku.objects.get(id=int(buku_id))
+    context['judul'] = selected_buku
+    return render(request, 'classifyme/hasil.html', context)

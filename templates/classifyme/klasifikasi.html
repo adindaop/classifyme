@@ -4,19 +4,19 @@
   <div class="row">
     <div class="col-md-12">
 
-        <h4><strong>Proses Text Mining</strong></h4><br>
+        <h4><strong>Proses Klasifikasi</strong></h4><br>
         <h5 id="get">Judul Buku : {{ judul.judul }}</h4>
-        <h5>Isi File</h5>
+        <h5>Hasil Text Mining</h5>
 
           <div>
-              <textarea class="file">{{ ulasan }}</textarea>
+              <textarea class="file">{{ ulasan.ulasan }}</textarea>
           </div>
 
-        <h5>Klik tombol Proses untuk melanjutkan proses klasifikasi.</h5><br>
+        <h5>Klik tombol Hasil untuk melanjutkan proses klasifikasi.</h5><br>
 
       <div>
         {% if user.is_authenticated %}
-          <button type="submit" class="button1">Proses</button>
+          <button type="submit" class="button1">Hasil</button>
         {% endif %}
       </div>
     </div>

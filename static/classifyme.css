@@ -62,12 +62,20 @@ h5 {
   color: black;
 }
 
+#hasil {
+  font-size: 35px;
+}
+
 .button {
   margin: 20px 50px 50px 600px;
 }
 
 .button1 {
   margin-left: 530px;
+}
+
+.button2 {
+  margin-left: 520px;
 }
 
 .footer {
