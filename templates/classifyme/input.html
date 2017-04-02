@@ -5,24 +5,16 @@
   <div class="row">
     <div class="col-md-12">
 
-        <h4><strong>Daftar Buku</strong></h4>
-        <br>
-        <br>
-
-        <div class="content container">
-          <div class="row">
-            <div class="col-md-3">
-              {% for q in buku %}
-                <p><a href="{% url 'classifyme:textmining' q.id%}">{{q.judul}}</a></p>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-
-        <br>
-        {% if user.is_authenticated %}
-          <a href="{% url 'classifyme:admin' %}" class="btn btn-default" role="button">Tambah Data Buku</a>
-        {% endif %}
+      <h4><strong>Daftar Buku</strong></h4>
+      <br>
+      <br>
+      {% for q in buku %}
+        <p><a href="{% url 'classifyme:textmining' q.id%}">{{q.judul}}</a></p>
+      {% endfor %}
+      <br>
+      {% if user.is_authenticated %}
+        <a href="{% url 'classifyme:admin' %}" class="btn btn-default" role="button">Tambah Data</a>
+      {% endif %}
 
     </div>
   </div>

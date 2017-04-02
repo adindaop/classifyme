@@ -13,9 +13,9 @@ def home(request):
     return render(request, 'classifyme/home.html', {})
 
 def input(request):
-    context = {} #inisialisasi harus kosong
-    buku_query = Buku.objects.all() #questions_query = variabel
-    context['buku'] = buku_query #yg di tanda '' boleh beda dr variabel
+    context = {}
+    buku_query = Buku.objects.all()
+    context['buku'] = buku_query
     return render(request, 'classifyme/input.html', context)
 
 def textmining(request, buku_id):
@@ -54,14 +54,14 @@ def klasifikasi(request, buku_id):
         if w not in stop_words:
             filtered_sentence.append(w)
 
-    word_list = set(stopwords.words("wordlist"))
+    word_list = set(stopwords.words("adjektiva"))
     filtered_word = []
     for a in tokenized_words:
         if a in word_list:
             filtered_word.append(a)
 
-    bigrams = list(ngrams(filtered_word,2))
-    context['bigrams'] = bigrams
+    # bigrams = list(ngrams(filtered_word,2))
+    context['filtered_word'] = filtered_word
 
     return render(request, 'classifyme/klasifikasi.html', context)
 
