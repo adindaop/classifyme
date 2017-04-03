@@ -2,6 +2,9 @@ import csv
 from django.shortcuts import render, get_object_or_404
 from .forms import BukuForm
 from .models import Buku
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.shortcuts import redirect
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.util import ngrams
@@ -13,10 +16,23 @@ def home(request):
     return render(request, 'classifyme/home.html', {})
 
 def input(request):
+    if request.method == 'POST':
+        buku = BukuForm(request.POST, request.FILES)
+        if buku.is_valid():
+            # buku = form.save(commit=False)
+            buku.save()
+            return redirect('classifyme:data')
+            # return HttpResponseRedirect(reverse('classifyme:data', args=(buku.id,)))
+            # return redirect('classifyme:data', id=post.id)
+    else:
+        form = BukuForm()
+    return render(request, 'classifyme/input.html', {'form': form})
+
+def data(request):
     context = {}
     buku_query = Buku.objects.all()
     context['buku'] = buku_query
-    return render(request, 'classifyme/input.html', context)
+    return render(request, 'classifyme/data.html', context)
 
 def textmining(request, buku_id):
     buku = get_object_or_404(Buku, id=buku_id)

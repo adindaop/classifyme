@@ -5,7 +5,7 @@ class Buku(models.Model):
     judul = models.CharField(max_length=100)
     penerbit = models.CharField(max_length=30)
     tahun_terbit = models.CharField(max_length=4)
-    ulasan = models.FileField(blank=True, null=True, upload_to='files')
+    ulasan = models.FileField(blank=True, null=True, upload_to='files/%Y/%m/%d/')
 
     def __str__(self):
         return self.judul
