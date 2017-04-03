@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Buku, Klasifikasi
+from .models import Buku, Klasifikasi, Akun
+
+class AkunAdmin(admin.ModelAdmin):
+    list_display = ['nama_pengguna', 'email', 'nama_depan', 'nama_belakang']
+    search_fields = ['nama_pengguna']
+    list_per_page = 20
+admin.site.register(Akun,AkunAdmin)
 
 class BukuAdmin(admin.ModelAdmin):
     list_display = ['penulis', 'judul', 'penerbit', 'tahun_terbit', 'ulasan']

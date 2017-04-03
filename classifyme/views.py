@@ -1,9 +1,10 @@
 import csv
 from django.shortcuts import render, get_object_or_404
-from .forms import BukuForm
-from .models import Buku
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from .forms import BukuForm, AkunForm
+from .models import Buku, Akun
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
@@ -15,15 +16,40 @@ def admin(request):
 def home(request):
     return render(request, 'classifyme/home.html', {})
 
+def register(request):
+    registered = False
+    if request.method == 'POST':
+        akun = AkunForm(request.POST)
+        if akun.is_valid():
+            akun = akun.save()
+            registered = True
+        else:
+            print(akun.errors)
+    else:
+        akun = AkunForm()
+    return render(request, 'classifyme/register.html', {'akun': akun, 'registered': registered})
+
+def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('nama_pengguna')
+        password = request.POST.get('kata_sandi')
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                return HttpResponseRedirect('/classifyme/')
+            else:
+                return HttpResponse("Akun tidak terdaftar.")
+        else:
+            return HttpResponse("Nama pengguna dan kata sandi tidak sesuai.")
+    else:
+        return render(request, 'classifyme/login.html', {})
+
 def input(request):
     if request.method == 'POST':
         buku = BukuForm(request.POST, request.FILES)
         if buku.is_valid():
-            # buku = form.save(commit=False)
             buku.save()
             return redirect('classifyme:data')
-            # return HttpResponseRedirect(reverse('classifyme:data', args=(buku.id,)))
-            # return redirect('classifyme:data', id=post.id)
     else:
         form = BukuForm()
     return render(request, 'classifyme/input.html', {'form': form})

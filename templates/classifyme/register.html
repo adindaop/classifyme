@@ -1,0 +1,31 @@
+{% extends 'classifyme/base.html' %}
+{% block content %}
+
+<div class="content container">
+  <div class="row">
+    <div class="col-md-12">
+
+      <h4 style="text-align: center"><strong>Sign Up</strong></h4>
+      <br>
+      <br>
+      {% if registered %}
+      <div style="text-align: center">
+        Classifyme : <strong>Terima kasih sudah mendaftar!</strong>
+        <p><a href="{% url 'classifyme:home' %}">Kembali ke Halaman Klasifikasi</a></p><br>
+        {% else %}
+        Classifyme : <a href="{% url 'classifyme:register' %}"><strong>Buat akun</strong></a>
+      </div>
+      <form method="POST" class="buku-form1">{% csrf_token %}
+        {{ akun.as_p }}
+        <br>
+        <br>
+        <div class="button1">
+          <button type="submit" name="submit">Daftar</button>
+        </div>
+      </form>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

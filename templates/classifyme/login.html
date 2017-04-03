@@ -1,0 +1,32 @@
+{% extends 'classifyme/base.html' %}
+{% block content %}
+
+<div class="content container">
+  <div class="row">
+    <div class="col-md-12">
+
+      <h4 style="text-align: center"><strong>Login</strong></h4>
+      <br>
+      <br>
+
+      <form id="login_form" method="post" action="/classifyme/login/">
+        {% csrf_token %}
+         <div class="buku-form1">
+           <label for="email">Nama Pengguna :</label>
+           <input type="text" name="nama_pengguna" value="" size="20">
+         </div>
+         <br>
+         <div class="buku-form1">
+           <label for="pwd">Password:</label>
+           <input type="password" name="kata_sandi" value="" size="20">
+         </div>
+         <br>
+         <div class="button1">
+           <button type="submit" name="submit">Login</button>
+         </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

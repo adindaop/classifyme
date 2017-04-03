@@ -18,6 +18,13 @@ body {
   text-decoration: none;
 }
 
+.navbar1 {
+  color: grey;
+  font-size: 15px;
+  text-decoration: none;
+  text-align: right;
+}
+
 .row {
   display: table;
   width: 100%;
@@ -48,7 +55,7 @@ h5 {
 }
 
 #isi {
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .file {
@@ -86,7 +93,17 @@ h5 {
   margin-top: 30px;
 }
 
-/*.book-form label, .book-form input {
+.buku-form label, .buku-form input {
   margin-left: 290px;
   width: 50%;
+}
+
+.buku-form1 label, .buku-form1 input {
+  margin-left: 400px;
+  width: 30%;
+}
+
+/*.buku-form1 label, .buku-form1 input {
+  margin-left: 400px;
+  width: 30%;
 }*/
