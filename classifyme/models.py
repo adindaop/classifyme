@@ -1,7 +1,7 @@
 from django.db import models
 
 class Akun(models.Model):
-    nama_pengguna = models.CharField(max_length=10)
+    nama_pengguna = models.CharField(max_length=20)
     kata_sandi = models.CharField(max_length=8)
     email = models.EmailField(max_length=30)
     nama_depan = models.CharField(max_length=10)
@@ -10,7 +10,7 @@ class Akun(models.Model):
 
     def __str__(self):
         return self.nama_pengguna
-        
+
 class Buku(models.Model):
     penulis = models.CharField(max_length=20)
     judul = models.CharField(max_length=100)

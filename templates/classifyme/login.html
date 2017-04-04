@@ -1,9 +1,22 @@
 {% extends 'classifyme/base.html' %}
 {% block content %}
 
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">ClassifyMe!</a>
+    </div>
+  </div>
+</nav>
+
 <div class="content container">
   <div class="row">
     <div class="col-md-12">
+
+      <div class="navbar">
+        <i class="glyphicon glyphicon-home"></i>
+        <a href="{% url 'classifyme:home' %}">Beranda</a>
+      </div>
 
       <h4 style="text-align: center"><strong>Login</strong></h4>
       <br>
@@ -17,7 +30,7 @@
          </div>
          <br>
          <div class="buku-form1">
-           <label for="pwd">Password:</label>
+           <label for="pwd">Kata Sandi :</label>
            <input type="password" name="kata_sandi" value="" size="20">
          </div>
          <br>

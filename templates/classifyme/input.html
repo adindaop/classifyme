@@ -1,13 +1,36 @@
 {% extends 'classifyme/base.html' %}
 {% block content %}
 
+<!-- <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">ClassifyMe!</a>
+    </div>
+    {% if user.is_authenticated %}
+    <ul class="nav navbar-nav navbar-right" id="demo">
+      <p>Halo, {{request.user.username}}</p>
+    </ul>
+    {% endif %}
+  </div>
+</nav> -->
+
 <div class="content container">
   <div class="row">
     <div class="col-md-12">
 
-      <div class="navbar1">
-        <a href="{% url 'classifyme:data' %}">Lihat Data</a>
-        <i class="glyphicon glyphicon-arrow-right"></i>
+      <div>
+        <ul style="list-style-type: none;">
+          <li>
+            <div class="navbar">
+              <i class="glyphicon glyphicon-home"></i>
+              <a href="{% url 'classifyme:home' %}">Beranda</a>
+              <div class="navbar-right">
+                <a href="{% url 'classifyme:data' %}">Lihat Data</a>
+                <i class="glyphicon glyphicon-arrow-right"></i>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
 
       <h4><strong>Input Buku</strong></h4>
