@@ -92,6 +92,8 @@ def klasifikasi(request, buku_id):
         if w not in stop_words:
             filtered_sentence_positif.append(w)
 
+    # context['tokenized_words_positif'] = tokenized_words_positif
+
     word_list = set(stopwords.words("adjektiva"))
     filtered_word_positif = []
     for a in filtered_sentence_positif:
@@ -101,9 +103,23 @@ def klasifikasi(request, buku_id):
     # bigrams = list(ngrams(filtered_word,2))
     context['filtered_word_positif'] = filtered_word_positif
 
+    # untuk FreqDist's total outcomes
+    jumlah_kata_positif = len(filtered_word_positif)
+    context['jumlah_kata_positif'] = jumlah_kata_positif
+
+    #untuk FreqDist's total samples
     wordfreq_positif = nltk.FreqDist(filtered_word_positif)
+    wordfreq_sample_positif = 0
+    for sample in wordfreq_positif:
+        wordfreq_sample_positif += 1
+    context['wordfreq_sample_positif'] = wordfreq_sample_positif
+
+    # untuk (samples, outcomes)'s list
     wordfreq_positif_list = wordfreq_positif.most_common()
     context['wordfreq_positif_list'] = wordfreq_positif_list
+
+
+
     # wordfreq = []
     # for w in filtered_word_positif:
     #     wordfreq.append(filtered_word_positif.count(w))
@@ -134,6 +150,21 @@ def klasifikasi(request, buku_id):
 
     # bigrams = list(ngrams(filtered_word,2))
     context['filtered_word_negatif'] = filtered_word_negatif
+
+    # untuk FreqDist's total outcomes
+    jumlah_kata_negatif = len(filtered_word_negatif)
+    context['jumlah_kata_negatif'] = jumlah_kata_negatif
+
+    # untuk FrqDist's total samples
+    wordfreq_negatif = nltk.FreqDist(filtered_word_negatif)
+    wordfreq_sample_negatif = 0
+    for sample in wordfreq_negatif:
+        wordfreq_sample_negatif += 1
+    context['wordfreq_sample_negatif'] = wordfreq_sample_negatif
+
+    # untuk (samples, outcomes)'s list
+    wordfreq_negatif_list = wordfreq_negatif.most_common()
+    context['wordfreq_negatif_list'] = wordfreq_negatif_list
 
     return render(request, 'classifyme/klasifikasi.html', context)
 
