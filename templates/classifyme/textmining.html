@@ -6,20 +6,69 @@
     <div class="col-md-12">
 
         <h4><strong>Proses Text Mining</strong></h4><br>
-        <h5 id="get">Judul Buku : {{ buku.judul }}</h4>
-        <h5>Isi File</h5>
+        <h5 id="get">Judul Buku : {{ buku.judul }}</h4><br>
 
-          <div>
-              <textarea class="file">{{ ulasan }}</textarea>
+          <div class="tentang">
+            <h5>Ulasan Positif</h5>
+
+            <div>
+              <textarea class="file">{{ ulasan_positif }}</textarea>
+            </div>
+            <br>
+
+            <h6 style="font-size: 15px">Jumlah Ulasan Positif : </h6>
+            <div>
+              <textarea class="jumlah" style="text-align: center; height: 20px;">{{ total_row_positif }}</textarea>
+            </div>
+            <br>
+
+            <h6 style="font-size: 15px; text-align: center">Jumlah kata : </h6>
+            <div>
+              <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_positif }}</textarea>
+            </div>
+            <br>
           </div>
 
-        <h5>Klik tombol Proses untuk melanjutkan proses klasifikasi.</h5><br>
+        <div class="tentang">
+          <h5>Ulasan Negatif</h5>
 
-      <div class="button1">
+          <div>
+            <textarea class="file">{{ ulasan_negatif }}</textarea>
+          </div>
+          <br>
+
+          <h6 style="font-size: 15px;">Jumlah Ulasan Negatif : </h6>
+          <div>
+            <textarea class="jumlah" style="text-align: center; height: 20px;">{{ total_row_negatif }}</textarea>
+          </div>
+          <br>
+
+          <h6 style="font-size: 15px;">Jumlah kata : </h6>
+          <div>
+            <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_negatif }}</textarea>
+          </div>
+          <br>
+          <br>
+          <br>
+        </div>
+
+        <h6 style="font-size: 15px; text-align: center;"><strong>Total Ulasan : </strong></h6>
+        <div>
+          <textarea class="jumlah" style="text-align: center; height: 20px; margin-left: 455px;">{{ total_ulasan }}</textarea>
+        </div>
+        <br>
+        <br>
+
+        <h5 style="text-align: center">Klik tombol Proses untuk melanjutkan proses klasifikasi.</h5>
+
+      <!-- <div class="button1"> -->
         {% if user.is_authenticated %}
-          <a href="{% url 'classifyme:klasifikasi' buku.id %}" class="btn btn-default" role="button">Proses</a>
+          <a href="{% url 'classifyme:klasifikasi' buku.id %}" class="btn btn-default" style="margin-left: 520px;" role="button">Proses</a>
         {% endif %}
-      </div>
+        <br>
+        <br>
+        <br>
+      <!-- </div> -->
     </div>
   </div>
 </div>

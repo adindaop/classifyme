@@ -63,6 +63,11 @@ h5 {
   height: 300px;
 }
 
+/*.jumlah {
+  width: 50%;
+  height: 20px;
+}*/
+
 #get {
   font-size: 20px;
   text-align: left;
@@ -78,7 +83,7 @@ h5 {
 }
 
 .button1 {
-  margin-left: 530px;
+  margin-left: 520px;
 }
 
 .button2 {

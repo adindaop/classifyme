@@ -6,8 +6,8 @@ class AkunForm(forms.ModelForm):
     class Meta:
         model = Akun
         fields = ('nama_pengguna', 'kata_sandi', 'email', 'nama_depan', 'nama_belakang',)
-        
+
 class BukuForm(forms.ModelForm):
     class Meta:
         model = Buku
-        fields = ('penulis', 'judul', 'penerbit', 'tahun_terbit', 'ulasan',)
+        fields = ('penulis', 'judul', 'penerbit', 'tahun_terbit', 'ulasan_positif', 'ulasan_negatif')
