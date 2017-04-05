@@ -166,6 +166,19 @@ def klasifikasi(request, buku_id):
     wordfreq_negatif_list = wordfreq_negatif.most_common()
     context['wordfreq_negatif_list'] = wordfreq_negatif_list
 
+    # unique words lists
+    unique_words = filtered_word_positif + filtered_word_negatif
+    unique_wordfreq_total = nltk.FreqDist(unique_words)
+    total_unique_words = unique_wordfreq_total.most_common()
+    context['total_unique_words'] = total_unique_words
+
+    # jumlah kata unik seluruh data percobaan
+    unique_wordfreq_total = nltk.FreqDist(unique_words)
+    wordfreq_sample_total = 0
+    for sample in unique_wordfreq_total:
+        wordfreq_sample_total += 1
+    context['wordfreq_sample_total'] = wordfreq_sample_total
+
     return render(request, 'classifyme/klasifikasi.html', context)
 
 def hasil(request, buku_id):
