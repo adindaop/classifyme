@@ -10,4 +10,4 @@ class AkunForm(forms.ModelForm):
 class BukuForm(forms.ModelForm):
     class Meta:
         model = Buku
-        fields = ('penulis', 'judul', 'penerbit', 'tahun_terbit', 'ulasan_positif', 'ulasan_negatif')
+        fields = ('penulis', 'judul', 'penerbit', 'tahun_terbit', 'ulasan_positif', 'ulasan_negatif', 'ulasan_testing')

@@ -18,6 +18,7 @@ class Buku(models.Model):
     tahun_terbit = models.CharField(max_length=4)
     ulasan_positif = models.FileField(blank=True, null=True, upload_to='files/%Y/%m/%d/')
     ulasan_negatif = models.FileField(blank=True, null=True, upload_to='files/%Y/%m/%d/')
+    ulasan_testing = models.FileField(blank=True, null=True, upload_to='files/%Y/%m/%d/')
 
     def __str__(self):
         return self.judul

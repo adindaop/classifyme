@@ -9,48 +9,20 @@
         <h5 id="get">Judul Buku : {{ buku.judul }}</h4><br>
 
           <div class="tentang">
-            <h5 style="color: black">Hasil Text Mining Ulasan Positif</h5>
-
+            <h5 style="color: black"><strong>Hasil Text Mining Ulasan Positif</strong></h5>
               <div>
                 <textarea class="file">{{ filtered_word_positif }}</textarea>
               </div>
               <br>
+          </div>
 
-              <h6 style="font-size: 15px">Frekuensi Tiap Kata dalam Kelas Positif : </h6>
+          <div class="tentang">
+            <h5 style="color: black"><strong>Hasil Text Mining Ulasan Negatif</strong></h5>
               <div>
-                <textarea style="width: 100%; height: 100px;">{{ wordfreq_positif_list }}</textarea>
+                <textarea class="file">{{ filtered_word_negatif }}</textarea>
               </div>
               <br>
-
-              <h6 style="font-size: 15px">Jumlah Kata dalam Kelas Positif : </h6>
-              <div>
-                <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_kata_positif }}</textarea>
-              </div>
-              <br>
-            </div>
-
-            <div class="tentang">
-              <h5 style="color: black">Hasil Text Mining Ulasan Negatif</h5>
-
-                <div>
-                  <textarea class="file">{{ filtered_word_negatif }}</textarea>
-                </div>
-                <br>
-
-                <h6 style="font-size: 15px">Frekuensi Tiap Kata dalam Kelas Negatif : </h6>
-                <div>
-                  <textarea style="width: 100%; height: 100px;">{{ wordfreq_negatif_list }}</textarea>
-                </div>
-                <br>
-
-                <h6 style="font-size: 15px">Jumlah Kata dalam Kelas Negatif : </h6>
-                <div>
-                  <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_kata_negatif }}</textarea>
-                </div>
-                <br>
-                <br>
-                <br>
-              </div>
+          </div>
 
             <h6 style="font-size: 15px; text-align: center;"><strong>Kata Unik : </strong></h6>
             <div>
@@ -59,12 +31,92 @@
             <br>
             <br>
 
-            <h6 style="font-size: 15px; text-align: center;"><strong>Jumlah Kata Unik : </strong></h6>
+            <h6 style="font-size: 15px; text-align: center;"><strong>Jumlah Kata Unik (|V|): </strong></h6>
             <div>
-              <textarea class="jumlah" style="text-align: center; height: 20px; margin-left: 455px;">{{ wordfreq_sample_total }}</textarea>
+              <textarea class="jumlah" style="text-align: center; height: 20px; margin-left: 490px;">{{ wordfreq_sample_total }}</textarea>
             </div>
             <br>
             <br>
+
+            <h6 style="font-size: 15px; text-align: center;"><strong>Data Testing : </strong></h6>
+            <div>
+              <textarea style="width: 100%; height: 100px;">{{ filtered_word_testing }}</textarea>
+            </div>
+            <br>
+            <br>
+
+            <h6 style="font-size: 15px; text-align: center;"><strong>Daftar Kata dalam Data Testing yang Muncul dalam Kelas Positif dan Negatif : </strong></h6>
+            <div>
+              <textarea style="width: 100%; height: 100px;">{{ list_dua_dua }}</textarea>
+            </div>
+            <br>
+            <br>
+
+          <div class="container">
+            <div class="row">
+              <div class="col-md-3">
+                  <h6 style="font-size: 15px; text-align: center"><strong>Frekuensi Tiap Kata dalam Kelas Positif (count(w,pos))</strong> : </h6>
+                  <div>
+                    <textarea style="width: 100%; height: 150px;">{{ wordfreq_positif_list }}</textarea><br>
+                  </div>
+              </div>
+
+                <div class="col-md-3">
+                  <h6 style="font-size: 15px; text-align: center"><strong>Jumlah Kejadian Kata dalam Kelas Positif + 1 (count(w,pos)+1)</strong> : </h6>
+                  <div>
+                    <textarea style="width: 100%; height: 150px;">{{ wordfreq_positif_list_plus }}</textarea><br>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <h6 style="font-size: 15px; text-align: center"><strong>Frekuensi Tiap Kata dalam Kelas Negatif (count(w,neg))</strong> : </h6>
+                  <div>
+                    <textarea style="width: 100%; height: 150px;">{{ wordfreq_negatif_list }}</textarea><br>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <h6 style="font-size: 15px; text-align: center"><strong>Jumlah Kejadian Kata dalam Kelas Negatif (count(w,neg)+1)</strong> : </h6>
+                  <div>
+                    <textarea style="width: 100%; height: 150px;">{{ wordfreq_negatif_list_plus }}</textarea><br>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <br>
+          <br>
+
+          <div class="tentang">
+            <h6 style="font-size: 15px"><strong>Jumlah Kata dalam Kelas Positif (count(c))</strong> : </h6>
+            <div>
+              <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_kata_positif }}</textarea>
+            </div>
+            <br>
+            <br>
+
+            <h6 style="font-size: 15px; text-align: center;"><strong>Conditional Probabilities Positif : </strong></h6>
+            <div>
+              <textarea style="width: 100%; height: 150px;">{{ cp_pos }}</textarea>
+            </div>
+            <br>
+            <br>
+          </div>
+
+          <div class="tentang">
+            <h6 style="font-size: 15px"><strong>Jumlah Kata dalam Kelas Negatif (count(c))</strong> : </h6>
+            <div>
+              <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_kata_negatif }}</textarea>
+            </div>
+            <br>
+            <br>
+
+            <h6 style="font-size: 15px; text-align: center;"><strong>Conditional Probabilities Negatif : </strong></h6>
+            <div>
+              <textarea style="width: 100%; height: 150px;">{{ cp_neg }}</textarea>
+            </div>
+            <br>
+            <br>
+          </div>
 
         <h5 style="text-align: center">Klik tombol Lihat Hasil untuk melanjutkan proses klasifikasi.</h5>
 

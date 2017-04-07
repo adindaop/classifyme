@@ -1,6 +1,5 @@
 {% extends 'classifyme/base.html' %}
 {% block content %}
-
 <!-- <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -22,6 +21,11 @@
 <div class="content container">
   <div class="row">
     <div class="col-md-12">
+
+      <div class="navbar">
+        <i class="glyphicon glyphicon-arrow-left"></i>
+        <a href="{% url 'classifyme:admin' %}">Halaman Administrasi</a>
+      </div>
 
       <div style="text-align: center">
         <h2 style="color: grey">Selamat Datang di</h2>

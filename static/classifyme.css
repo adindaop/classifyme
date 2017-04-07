@@ -49,6 +49,13 @@ h5 {
   text-align: center;
 }
 
+.dualima {
+  width: 25%;
+  float: left;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
 .cara li {
   text-align: left;
   margin-bottom: 5px;

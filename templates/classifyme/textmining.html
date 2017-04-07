@@ -16,7 +16,7 @@
             </div>
             <br>
 
-            <h6 style="font-size: 15px">Jumlah Ulasan Positif : </h6>
+            <h6 style="font-size: 15px">Jumlah Ulasan Positif (Nc) : </h6>
             <div>
               <textarea class="jumlah" style="text-align: center; height: 20px;">{{ total_row_positif }}</textarea>
             </div>
@@ -37,7 +37,7 @@
           </div>
           <br>
 
-          <h6 style="font-size: 15px;">Jumlah Ulasan Negatif : </h6>
+          <h6 style="font-size: 15px;">Jumlah Ulasan Negatif (Nc) : </h6>
           <div>
             <textarea class="jumlah" style="text-align: center; height: 20px;">{{ total_row_negatif }}</textarea>
           </div>
@@ -50,7 +50,7 @@
           <br>
         </div>
 
-        <h6 style="font-size: 15px; text-align: center;"><strong>Total Ulasan : </strong></h6>
+        <h6 style="font-size: 15px; text-align: center;"><strong>Total Ulasan (N) : </strong></h6>
         <div>
           <textarea class="jumlah" style="text-align: center; height: 20px; margin-left: 455px;">{{ total_ulasan }}</textarea>
         </div>
@@ -68,7 +68,7 @@
 
       <!-- <div class="button1"> -->
         {% if user.is_authenticated %}
-          <a href="{% url 'classifyme:klasifikasi' buku.id %}" class="btn btn-default" style="margin-left: 520px;" role="button">Proses</a>
+          <a href="{% url 'classifyme:klasifikasi' buku.id %}" class="btn btn-default" style="margin-left: 515px;" role="button">Proses</a>
         {% endif %}
         <br>
         <br>
