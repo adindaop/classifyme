@@ -113,9 +113,10 @@ def klasifikasi(request, buku_id):
     wordfreq_sample_positif = 0
     for sample in wordfreq_positif:
         wordfreq_sample_positif += 1
+        print('wordfreq_sample_positif', wordfreq_sample_positif)
     context['wordfreq_sample_positif'] = wordfreq_sample_positif
 
-    # count(w,positif)
+    #count(w,positif)
     # word_counts = collections.Counter(filtered_word_positif)
     # wordfreq_positif_list = ''
     # for word, count in sorted(word_counts.items()):
@@ -201,6 +202,7 @@ def klasifikasi(request, buku_id):
     # bigrams = list(ngrams(filtered_word,2))
     context['filtered_word_testing'] = filtered_word_testing
 
+    # kata dalam data testing yang muncul di kelas positif DAN negatif
     list_dua_dua = []
     for elem in filtered_word_testing:
         if elem in filtered_word_positif and elem in filtered_word_negatif:
@@ -255,19 +257,23 @@ def klasifikasi(request, buku_id):
     word_counts = collections.Counter(filtered_word_positif)
     cp_pos = ''
     for w, c in sorted(word_counts.items()):
-        cp_pembilang = float(c+1)
-        cp_penyebut = float(jumlah_kata_positif + wordfreq_sample_total)
+        cp_pembilang = c+1
+        cp_penyebut = jumlah_kata_positif + wordfreq_sample_total
         cp = float(cp_pembilang/cp_penyebut)
         if w in list_dua_dua:
-            cp_pos += '"%s" = %d\n' % (w, float(cp))
+            cp_pos += '"{}" = {}\n'.format(w, cp)
+            # cp_pos += '"%s" = %f\n' % (w, cp) -> ini kalau cuma mau nampilin bbrp angka di belakang koma (ga lengkap)
     context['cp_pos'] = cp_pos
 
     # conditional probabilities negatif
     word_counts = collections.Counter(filtered_word_negatif)
     cp_neg = ''
     for w, c in sorted(word_counts.items()):
+        cp_pembilang = c+1
+        cp_penyebut = jumlah_kata_negatif + wordfreq_sample_total
+        cp = float(cp_pembilang/cp_penyebut)
         if w in list_dua_dua:
-            cp_neg += '"%s" = %d / %d\n' % (w, c+1, coba)
+            cp_neg += '"{}" = {}\n'.format(w, cp)
     context['cp_neg'] = cp_neg
 
     return render(request, 'classifyme/klasifikasi.html', context)
