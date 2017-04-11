@@ -9,60 +9,72 @@
         <h5 id="get">Judul Buku : {{ buku.judul }}</h4><br>
 
           <div class="tentang">
-            <h5>Ulasan Positif</h5>
+            <h5 style="color: black"><strong>Ulasan Positif</strong></h5>
 
             <div>
               <textarea class="file">{{ ulasan_positif }}</textarea>
             </div>
             <br>
 
-            <h6 style="font-size: 15px">Jumlah Ulasan Positif (Nc) : </h6>
+            <h6 style="font-size: 15px"><strong>Jumlah Ulasan Positif (Nc) : </strong></h6>
             <div>
               <textarea class="jumlah" style="text-align: center; height: 20px;">{{ total_row_positif }}</textarea>
             </div>
             <br>
 
-            <h6 style="font-size: 15px; text-align: center">Jumlah kata : </h6>
+            <!-- <h6 style="font-size: 15px; text-align: center"><strong>Jumlah kata : </strong></h6>
             <div>
               <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_positif }}</textarea>
             </div>
-            <br>
+            <br> -->
           </div>
 
         <div class="tentang">
-          <h5>Ulasan Negatif</h5>
+          <h5 style="color: black"><strong>Ulasan Negatif</strong></h5>
 
           <div>
             <textarea class="file">{{ ulasan_negatif }}</textarea>
           </div>
           <br>
 
-          <h6 style="font-size: 15px;">Jumlah Ulasan Negatif (Nc) : </h6>
+          <h6 style="font-size: 15px;"><strong>Jumlah Ulasan Negatif (Nc) </strong>: </h6>
           <div>
             <textarea class="jumlah" style="text-align: center; height: 20px;">{{ total_row_negatif }}</textarea>
           </div>
           <br>
 
-          <h6 style="font-size: 15px;">Jumlah kata : </h6>
+          <!-- <h6 style="font-size: 15px;"><strong>Jumlah kata : </strong></h6>
           <div>
             <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_negatif }}</textarea>
           </div>
-          <br>
+          <br> -->
         </div>
+
+
+
 
         <h6 style="font-size: 15px; text-align: center;"><strong>Total Ulasan (N) : </strong></h6>
         <div>
           <textarea class="jumlah" style="text-align: center; height: 20px; margin-left: 455px;">{{ total_ulasan }}</textarea>
         </div>
         <br>
-        <br>
 
-        <!-- <h6 style="font-size: 15px; text-align: center;"><strong>Hasil Filter Kata : </strong></h6>
-        <div>
-          <textarea class="jumlah" style="width: 100%; height: 50px">{{ tokenized_words_positif }}</textarea>
+        <div class="tentang">
+          <h6 style="font-size: 15px;"><strong>Priors Positif (P(pos)) : </strong></h6>
+          <div>
+            <textarea class="jumlah" style="text-align: center; height: 20px;">{{ priors_pos }}</textarea>
+          </div>
         </div>
-        <br>
-        <br> -->
+
+        <div class="tentang">
+          <h6 style="font-size: 15px;"><strong>Priors Negatif (P(neg)) : </strong></h6>
+          <div>
+            <textarea class="jumlah" style="text-align: center; height: 20px;">{{ priors_neg }}</textarea>
+          </div>
+          <br>
+          <br>
+        </div>
+
 
         <h5 style="text-align: center">Klik tombol Proses untuk melanjutkan proses klasifikasi.</h5>
 

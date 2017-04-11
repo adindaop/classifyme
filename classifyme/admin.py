@@ -8,11 +8,10 @@ class AkunAdmin(admin.ModelAdmin):
 admin.site.register(Akun,AkunAdmin)
 
 class BukuAdmin(admin.ModelAdmin):
-    list_display = ['penulis', 'judul', 'penerbit', 'tahun_terbit', 'ulasan_positif', 'ulasan_negatif', 'ulasan_testing']
+    list_display = ['penulis', 'judul', 'penerbit', 'tahun_terbit', 'ulasan_positif', 'priors_pos', 'ulasan_negatif', 'priors_neg', 'ulasan_testing']
     list_filter = ('penulis', 'tahun_terbit')
     search_fields = ['penulis', 'judul']
     list_per_page = 20
-
 admin.site.register(Buku,BukuAdmin)
 
 class KlasifikasiAdmin(admin.ModelAdmin):

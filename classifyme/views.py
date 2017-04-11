@@ -49,10 +49,10 @@ def textmining(request, buku_id):
         for row in csvreader:
             total_row_positif += 1
             ulasan_positif += row['Review']
-            jumlah_positif = len(ulasan_positif.split())
+            # jumlah_positif = len(ulasan_positif.split()) -> jumlah kata dalam ulasan positif (raw)
     context['total_row_positif'] = total_row_positif
     context['ulasan_positif'] = ulasan_positif
-    context['jumlah_positif'] = jumlah_positif
+    # context['jumlah_positif'] = jumlah_positif
 
     print(selected_buku.ulasan_negatif)
 
@@ -63,13 +63,32 @@ def textmining(request, buku_id):
         for row in csvreader:
             total_row_negatif += 1
             ulasan_negatif += row['Review']
-            jumlah_negatif = len(ulasan_negatif.split())
+            # jumlah_negatif = len(ulasan_negatif.split()) -> jumlah kata dalam ulasan negatif (raw)
     context['total_row_negatif'] = total_row_negatif
     context['ulasan_negatif'] = ulasan_negatif
-    context['jumlah_negatif'] = jumlah_negatif
+    # context['jumlah_negatif'] = jumlah_negatif
 
+    # total ulasan
     total_ulasan = total_row_positif + total_row_negatif
     context['total_ulasan'] = total_ulasan
+
+    # priors positif
+    priors_pos = float(total_row_positif / total_ulasan)
+    context['priors_pos'] = priors_pos
+
+    # save the priors positif result to django model field
+    selected_priors = Buku.objects.get(id=int(buku_id))
+    selected_priors.priors_pos = priors_pos
+    selected_priors.save()
+
+    # priors negatif
+    priors_neg = float(total_row_negatif / total_ulasan)
+    context['priors_neg'] = priors_neg
+
+    # save the priors negatif result to django model field
+    selected_priors = Buku.objects.get(id=int(buku_id))
+    selected_priors.priors_neg = priors_neg
+    selected_priors.save()
 
     return render(request, 'classifyme/textmining.html', context)
 
@@ -113,7 +132,7 @@ def klasifikasi(request, buku_id):
     wordfreq_sample_positif = 0
     for sample in wordfreq_positif:
         wordfreq_sample_positif += 1
-        print('wordfreq_sample_positif', wordfreq_sample_positif)
+        # print('wordfreq_sample_positif', wordfreq_sample_positif)
     context['wordfreq_sample_positif'] = wordfreq_sample_positif
 
     #count(w,positif)
@@ -218,6 +237,15 @@ def klasifikasi(request, buku_id):
             wordfreq_positif_list += '"%s" = %d\n' % (w, c)
     context['wordfreq_positif_list'] = wordfreq_positif_list
 
+    # count(w, testing_pos)
+    word_counts = collections.Counter(filtered_word_testing)
+    wordfreq_testing_list = []
+    for w, cp in sorted(word_counts.items()):
+        if w in list_dua_dua:
+            # wordfreq_testing_list += '"{}" = {}\n'.format(w, c)
+            wordfreq_testing_list.append({'w': w, 'cp': cp})
+    context['wordfreq_testing_list'] = wordfreq_testing_list
+
     # count(w,positif) + 1
     word_counts = collections.Counter(filtered_word_positif)
     wordfreq_positif_list_plus = ''
@@ -242,39 +270,57 @@ def klasifikasi(request, buku_id):
             wordfreq_negatif_list_plus += '"%s" = %d\n' % (w, c+1)
     context['wordfreq_negatif_list_plus'] = wordfreq_negatif_list_plus
 
-    # word_counts = collections.Counter(filtered_word_positif)
-    # cp_pembilang = ''
-    # for w, c in sorted(word_counts.items()):
-    #     cp_pembilang = int(c+1)
-    #     if w in list_dua_dua:
-    #         cp_pembilang += '"%s" = %d\n' % (w, cp_pembilang)
-    # context['cp_pembilang'] = cp_pembilang
-
     coba = float(jumlah_kata_positif + wordfreq_sample_total)
     context['coba'] = coba
 
     # conditional probabilities positif
     word_counts = collections.Counter(filtered_word_positif)
-    cp_pos = ''
+    cp_pos_list = []
     for w, c in sorted(word_counts.items()):
         cp_pembilang = c+1
         cp_penyebut = jumlah_kata_positif + wordfreq_sample_total
         cp = float(cp_pembilang/cp_penyebut)
         if w in list_dua_dua:
-            cp_pos += '"{}" = {}\n'.format(w, cp)
+            cp_pos_list.append({'w': w, 'cp': cp})
+            # cp_pos += '"{}" = {}\n'.format(w, cp)
             # cp_pos += '"%s" = %f\n' % (w, cp) -> ini kalau cuma mau nampilin bbrp angka di belakang koma (ga lengkap)
-    context['cp_pos'] = cp_pos
+    context['cp_pos_list'] = cp_pos_list
 
     # conditional probabilities negatif
     word_counts = collections.Counter(filtered_word_negatif)
-    cp_neg = ''
+    cp_neg_list = []
     for w, c in sorted(word_counts.items()):
         cp_pembilang = c+1
         cp_penyebut = jumlah_kata_negatif + wordfreq_sample_total
         cp = float(cp_pembilang/cp_penyebut)
         if w in list_dua_dua:
-            cp_neg += '"{}" = {}\n'.format(w, cp)
-    context['cp_neg'] = cp_neg
+            cp_neg_list.append({'w': w, 'cp': cp})
+    context['cp_neg_list'] = cp_neg_list
+    print(cp_neg_list, 'cp_neg_list')
+
+    # hasil akhir positif
+    product_cp_pos = 1
+    cp_words_pos = []
+    i = 0
+    while i < len(cp_pos_list):
+        cp_words_pos.append(cp_pos_list[i]['cp'] ** wordfreq_testing_list[i]['cp']) #cp**jumlah_kata
+        i += 1
+    for x in cp_words_pos:
+        product_cp_pos *=x #pengalian semua objek dalam list
+    hasil_pos = selected_buku.priors_pos * product_cp_pos #pengalian hasil pengalian semua objek dalam list dengan priors
+    context['hasil_pos'] = hasil_pos
+
+    # hasil akhir negatif
+    product_cp_neg = 1
+    cp_words_neg = []
+    i = 0
+    while i < len(cp_neg_list):
+        cp_words_neg.append(cp_neg_list[i]['cp'] ** wordfreq_testing_list[i]['cp']) #cp**jumlah_kata
+        i += 1
+    for x in cp_words_neg:
+        product_cp_neg *=x #pengalian semua objek dalam list
+    hasil_neg = selected_buku.priors_neg * product_cp_neg #pengalian hasil pengalian semua objek dalam list dengan priors
+    context['hasil_neg'] = hasil_neg
 
     return render(request, 'classifyme/klasifikasi.html', context)
 
