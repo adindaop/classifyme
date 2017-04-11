@@ -17,10 +17,13 @@ class Buku(models.Model):
     penerbit = models.CharField(max_length=30)
     tahun_terbit = models.CharField(max_length=4)
     ulasan_positif = models.FileField(blank=True, null=True, upload_to='files/%Y/%m/%d/')
-    priors_pos = models.FloatField(blank=True, null=True)
     ulasan_negatif = models.FileField(blank=True, null=True, upload_to='files/%Y/%m/%d/')
-    priors_neg = models.FloatField(blank=True, null=True)
     ulasan_testing = models.FileField(blank=True, null=True, upload_to='files/%Y/%m/%d/')
+    priors_pos = models.FloatField(blank=True, null=True)
+    priors_neg = models.FloatField(blank=True, null=True)
+    hasil_pos = models.FloatField(blank=True, null=True)
+    hasil_neg = models.FloatField(blank=True, null=True)
+    hasil_klasifikasi = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         return self.judul

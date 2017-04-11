@@ -310,6 +310,11 @@ def klasifikasi(request, buku_id):
     hasil_pos = selected_buku.priors_pos * product_cp_pos #pengalian hasil pengalian semua objek dalam list dengan priors
     context['hasil_pos'] = hasil_pos
 
+    # save hasil akhir positif to django model field
+    selected_hasil = Buku.objects.get(id=int(buku_id))
+    selected_hasil.hasil_pos = hasil_pos
+    selected_hasil.save()
+
     # hasil akhir negatif
     product_cp_neg = 1
     cp_words_neg = []
@@ -322,12 +327,29 @@ def klasifikasi(request, buku_id):
     hasil_neg = selected_buku.priors_neg * product_cp_neg #pengalian hasil pengalian semua objek dalam list dengan priors
     context['hasil_neg'] = hasil_neg
 
+    # save hasil akhir negatif to django model field
+    selected_hasil = Buku.objects.get(id=int(buku_id))
+    selected_hasil.hasil_neg = hasil_neg
+    selected_hasil.save()
+
     return render(request, 'classifyme/klasifikasi.html', context)
 
 def hasil(request, buku_id):
     context = {}
     selected_buku = Buku.objects.get(id=int(buku_id))
     context['buku'] = selected_buku
+
+    if selected_buku.hasil_pos > selected_buku.hasil_neg:
+        hasil_akhir = "Positif"
+    else:
+        hasil_akhir = "Negatif"
+    context['hasil_akhir'] = hasil_akhir
+
+    #save hasil akhir to django model field
+    selected_hasil = Buku.objects.get(id=int(buku_id))
+    selected_hasil.hasil_klasifikasi = hasil_akhir
+    selected_hasil.save()
+
     return render(request, 'classifyme/hasil.html', context)
 
 def register(request):
