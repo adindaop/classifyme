@@ -11,6 +11,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.util import ngrams
 import collections
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 def admin(request):
     return render(request, admin.site.urls, {})
@@ -40,32 +41,32 @@ def textmining(request, buku_id):
     selected_buku = Buku.objects.get(id=int(buku_id))
     context['buku'] = selected_buku
 
-    print(selected_buku.ulasan_positif)
+    print(selected_buku.training_set_positif)
 
-    ulasan_positif = ''
-    with open('media/{}'.format(selected_buku.ulasan_positif)) as csvfile:
+    training_set_positif = ''
+    with open('media/{}'.format(selected_buku.training_set_positif)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         total_row_positif = 0
         for row in csvreader:
             total_row_positif += 1
-            ulasan_positif += row['Review']
+            training_set_positif += row['Review']
             # jumlah_positif = len(ulasan_positif.split()) -> jumlah kata dalam ulasan positif (raw)
     context['total_row_positif'] = total_row_positif
-    context['ulasan_positif'] = ulasan_positif
+    context['training_set_positif'] = training_set_positif
     # context['jumlah_positif'] = jumlah_positif
 
-    print(selected_buku.ulasan_negatif)
+    print(selected_buku.training_set_negatif)
 
-    ulasan_negatif = ''
-    with open('media/{}'.format(selected_buku.ulasan_negatif)) as csvfile:
+    training_set_negatif = ''
+    with open('media/{}'.format(selected_buku.training_set_negatif)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         total_row_negatif = 0
         for row in csvreader:
             total_row_negatif += 1
-            ulasan_negatif += row['Review']
+            training_set_negatif += row['Review']
             # jumlah_negatif = len(ulasan_negatif.split()) -> jumlah kata dalam ulasan negatif (raw)
     context['total_row_negatif'] = total_row_negatif
-    context['ulasan_negatif'] = ulasan_negatif
+    context['training_set_negatif'] = training_set_negatif
     # context['jumlah_negatif'] = jumlah_negatif
 
     # total ulasan
@@ -97,31 +98,40 @@ def klasifikasi(request, buku_id):
     selected_buku = Buku.objects.get(id=int(buku_id))
     context['buku'] = selected_buku
 
-    ulasan_positif = ''
-    with open('media/{}'.format(selected_buku.ulasan_positif)) as csvfile:
+    training_set_positif = ''
+    with open('media/{}'.format(selected_buku.training_set_positif)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         for row in csvreader:
-            ulasan_positif += row['Review']
+            training_set_positif += row['Review']
 
-    case_folding = ulasan_positif.lower()
-    tokenized_words_positif = word_tokenize(case_folding)
+    # mengubah semua kata menjadi lowercase
+    case_folding_pos = training_set_positif.lower()
 
+    # menghilangkan imbuhan kata (try Sastrawi)
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
+    hasil_stemming_pos = stemmer.stem(training_set_positif)
+
+    # memisahkan kalimat menjadi kata
+    tokenized_words_positif = word_tokenize(hasil_stemming_pos)
+
+    # menghilangkan kata yang tidak perlu
     stop_words = set(stopwords.words("bahasa"))
     filtered_sentence_positif = []
     for w in tokenized_words_positif:
         if w not in stop_words:
             filtered_sentence_positif.append(w)
 
-    # context['tokenized_words_positif'] = tokenized_words_positif
-
-    word_list = set(stopwords.words("adjektiva"))
+    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
+    word_list = set(stopwords.words("wordlist"))
     filtered_word_positif = []
     for a in filtered_sentence_positif:
         if a in word_list:
             filtered_word_positif.append(a)
 
-    # bigrams = list(ngrams(filtered_word,2))
     context['filtered_word_positif'] = filtered_word_positif
+
+    # bigrams = list(ngrams(filtered_word,2))
 
     # count(positif) / (untuk FreqDist's total outcomes)
     jumlah_kata_positif = len(filtered_word_positif)
@@ -143,28 +153,37 @@ def klasifikasi(request, buku_id):
     # context['wordfreq_positif_list'] = wordfreq_positif_list
 
 
-    ulasan_negatif = ''
-    with open('media/{}'.format(selected_buku.ulasan_negatif)) as csvfile:
+    training_set_negatif = ''
+    with open('media/{}'.format(selected_buku.training_set_positif)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         for row in csvreader:
-            ulasan_negatif += row['Review']
+            training_set_negatif += row['Review']
 
-    case_folding = ulasan_negatif.lower()
-    tokenized_words_negatif = word_tokenize(case_folding)
+    # mengubah semua kata menjadi lowercase
+    case_folding = training_set_negatif.lower()
 
+    # menghilangkan imbuhan kata (try Sastrawi)
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
+    hasil_stemming_neg = stemmer.stem(training_set_negatif)
+
+    # memisahkan kalimat menjadi kata
+    tokenized_words_negatif = word_tokenize(hasil_stemming_neg)
+
+    # menghilangkan kata yang tidak perlu
     stop_words = set(stopwords.words("bahasa"))
     filtered_sentence_negatif = []
     for w in tokenized_words_negatif:
         if w not in stop_words:
             filtered_sentence_negatif.append(w)
 
-    word_list = set(stopwords.words("adjektiva"))
+    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
+    word_list = set(stopwords.words("wordlist"))
     filtered_word_negatif = []
     for a in filtered_sentence_negatif:
         if a in word_list:
             filtered_word_negatif.append(a)
 
-    # bigrams = list(ngrams(filtered_word,2))
     context['filtered_word_negatif'] = filtered_word_negatif
 
     # count(negatif) / (untuk FreqDist's total outcomes)
@@ -195,30 +214,37 @@ def klasifikasi(request, buku_id):
         wordfreq_sample_total += 1
     context['wordfreq_sample_total'] = wordfreq_sample_total
 
-    ulasan_testing = ''
-    with open('media/{}'.format(selected_buku.ulasan_testing)) as csvfile:
+    testing_set = ''
+    with open('media/{}'.format(selected_buku.testing_set)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         for row in csvreader:
-            ulasan_testing += row['Review']
+            testing_set += row['Review']
 
-    case_folding = ulasan_testing.lower()
-    tokenized_words_testing = word_tokenize(case_folding)
+    # mengubah semua kata menjadi lowercase
+    case_folding = testing_set.lower()
 
+    # menghilangkan imbuhan kata (try Sastrawi)
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
+    hasil_stemming_test = stemmer.stem(testing_set)
+
+    # memisahkan kalimat menjadi kata
+    tokenized_words_testing = word_tokenize(hasil_stemming_test)
+
+    # menghilangkan kata yang tidak perlu
     stop_words = set(stopwords.words("bahasa"))
     filtered_sentence_testing = []
     for w in tokenized_words_testing:
         if w not in stop_words:
             filtered_sentence_testing.append(w)
 
-    # context['tokenized_words_positif'] = tokenized_words_positif
-
-    word_list = set(stopwords.words("adjektiva"))
+    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
+    word_list = set(stopwords.words("wordlist"))
     filtered_word_testing = []
     for a in filtered_sentence_testing:
         if a in word_list:
             filtered_word_testing.append(a)
 
-    # bigrams = list(ngrams(filtered_word,2))
     context['filtered_word_testing'] = filtered_word_testing
 
     # kata dalam data testing yang muncul di kelas positif DAN negatif

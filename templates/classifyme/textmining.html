@@ -9,57 +9,42 @@
         <h5 id="get">Judul Buku : {{ buku.judul }}</h4><br>
 
           <div class="tentang">
-            <h5 style="color: black"><strong>Ulasan Positif</strong></h5>
+            <h5 style="color: black"><strong>Training Set Positif : </strong></h5>
 
             <div>
-              <textarea class="file">{{ ulasan_positif }}</textarea>
+              <textarea class="file">{{ training_set_positif }}</textarea>
             </div>
             <br>
 
-            <h6 style="font-size: 15px"><strong>Jumlah Ulasan Positif (Nc) : </strong></h6>
+            <h6 style="font-size: 15px"><strong>Jumlah Training Set Positif (Nc) : </strong></h6>
             <div>
               <textarea class="jumlah" style="text-align: center; height: 20px;">{{ total_row_positif }}</textarea>
             </div>
             <br>
-
-            <!-- <h6 style="font-size: 15px; text-align: center"><strong>Jumlah kata : </strong></h6>
-            <div>
-              <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_positif }}</textarea>
-            </div>
-            <br> -->
           </div>
 
         <div class="tentang">
-          <h5 style="color: black"><strong>Ulasan Negatif</strong></h5>
+          <h5 style="color: black"><strong>Training Set Negatif : </strong></h5>
 
           <div>
-            <textarea class="file">{{ ulasan_negatif }}</textarea>
+            <textarea class="file">{{ training_set_negatif }}</textarea>
           </div>
           <br>
 
-          <h6 style="font-size: 15px;"><strong>Jumlah Ulasan Negatif (Nc) </strong>: </h6>
+          <h6 style="font-size: 15px;"><strong>Jumlah Training Set Negatif (Nc) : </strong></h6>
           <div>
             <textarea class="jumlah" style="text-align: center; height: 20px;">{{ total_row_negatif }}</textarea>
           </div>
           <br>
-
-          <!-- <h6 style="font-size: 15px;"><strong>Jumlah kata : </strong></h6>
-          <div>
-            <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_negatif }}</textarea>
-          </div>
-          <br> -->
         </div>
 
-
-
-
-        <h6 style="font-size: 15px; text-align: center;"><strong>Total Ulasan (N) : </strong></h6>
+        <h6 style="font-size: 15px; text-align: center;"><strong>Total Training Set (N) : </strong></h6>
         <div>
           <textarea class="jumlah" style="text-align: center; height: 20px; margin-left: 455px;">{{ total_ulasan }}</textarea>
         </div>
         <br>
 
-        <div class="tentang">
+        <!-- <div class="tentang">
           <h6 style="font-size: 15px;"><strong>Priors Positif (P(pos)) : </strong></h6>
           <div>
             <textarea class="jumlah" style="text-align: center; height: 20px;">{{ priors_pos }}</textarea>
@@ -73,19 +58,17 @@
           </div>
           <br>
           <br>
-        </div>
+        </div> -->
 
 
         <h5 style="text-align: center">Klik tombol Proses untuk melanjutkan proses klasifikasi.</h5>
 
-      <!-- <div class="button1"> -->
         {% if user.is_authenticated %}
           <a href="{% url 'classifyme:klasifikasi' buku.id %}" class="btn btn-default" style="margin-left: 515px;" role="button">Proses</a>
         {% endif %}
         <br>
         <br>
         <br>
-      <!-- </div> -->
     </div>
   </div>
 </div>
