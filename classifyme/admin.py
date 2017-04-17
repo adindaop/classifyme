@@ -1,11 +1,13 @@
 from django.contrib import admin
-from .models import Buku, Klasifikasi, Akun
+from .models import TrainingSetPos, TrainingSetNeg, Buku
 
-class AkunAdmin(admin.ModelAdmin):
-    list_display = ['nama_pengguna', 'email', 'nama_depan', 'nama_belakang']
-    search_fields = ['nama_pengguna']
-    list_per_page = 20
-admin.site.register(Akun,AkunAdmin)
+class TrainingSetPosAdmin(admin.ModelAdmin):
+    list_display = ['nama', 'file']
+admin.site.register(TrainingSetPos,TrainingSetPosAdmin)
+
+class TrainingSetNegAdmin(admin.ModelAdmin):
+    list_display = ['nama', 'file']
+admin.site.register(TrainingSetNeg,TrainingSetNegAdmin)
 
 class BukuAdmin(admin.ModelAdmin):
     exclude = ['priors_pos', 'priors_neg', 'hasil_pos', 'hasil_neg', 'hasil_klasifikasi']
@@ -14,10 +16,3 @@ class BukuAdmin(admin.ModelAdmin):
     search_fields = ['penulis', 'judul']
     list_per_page = 20
 admin.site.register(Buku,BukuAdmin)
-
-class KlasifikasiAdmin(admin.ModelAdmin):
-    list_display = ['judul', 'hasil_klasifikasi']
-    list_filter = ('hasil_klasifikasi',)
-    search_fields = ['judul', 'hasil_klasifikasi']
-    list_per_page = 20
-admin.site.register(Klasifikasi,KlasifikasiAdmin)

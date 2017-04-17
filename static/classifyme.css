@@ -94,7 +94,7 @@ h5 {
 }
 
 .button2 {
-  margin-left: 510px;
+  margin-left: 525px;
 }
 
 .footer {
@@ -105,12 +105,12 @@ h5 {
   margin-top: 30px;
 }
 
-.buku-form label, .buku-form input {
+.buku-form label, .buku-form input, .buku-form select{
   margin-left: 290px;
   width: 50%;
 }
 
-.buku-form1 label, .buku-form1 input {
+.buku-form1 label, .buku-form1 input, .buku-form select{
   margin-left: 400px;
   width: 30%;
 }

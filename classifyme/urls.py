@@ -17,8 +17,8 @@ urlpatterns = [
     #/classifyme/input/data/1/klasifikasi/hasil
     url(r'^classifyme/input/data/(?P<buku_id>\d+)/klasifikasi/hasil/$', views.hasil, name='hasil'),
 
-    #/classifyme/register/
-    url(r'^classifyme/register/$', views.register, name='register'),
-    #/classifyme/login/
-    url(r'^classifyme/login/$', views.login, name='login'),
+    # #/classifyme/register/
+    # url(r'^classifyme/register/$', views.register, name='register'),
+    # #/classifyme/login/
+    # url(r'^classifyme/login/$', views.login, name='login'),
 ]

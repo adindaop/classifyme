@@ -2,8 +2,8 @@ import csv
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import BukuForm, AkunForm
-from .models import Buku, Akun
+from .forms import BukuForm
+from .models import Buku
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 import nltk
@@ -44,7 +44,7 @@ def textmining(request, buku_id):
     print(selected_buku.training_set_positif)
 
     training_set_positif = ''
-    with open('media/{}'.format(selected_buku.training_set_positif)) as csvfile:
+    with open('media/{}'.format(selected_buku.training_set_positif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         total_row_positif = 0
         for row in csvreader:
@@ -58,7 +58,7 @@ def textmining(request, buku_id):
     print(selected_buku.training_set_negatif)
 
     training_set_negatif = ''
-    with open('media/{}'.format(selected_buku.training_set_negatif)) as csvfile:
+    with open('media/{}'.format(selected_buku.training_set_negatif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         total_row_negatif = 0
         for row in csvreader:
@@ -99,7 +99,7 @@ def klasifikasi(request, buku_id):
     context['buku'] = selected_buku
 
     training_set_positif = ''
-    with open('media/{}'.format(selected_buku.training_set_positif)) as csvfile:
+    with open('media/{}'.format(selected_buku.training_set_positif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         for row in csvreader:
             training_set_positif += row['Review']
@@ -113,7 +113,7 @@ def klasifikasi(request, buku_id):
     hasil_stemming_pos = stemmer.stem(training_set_positif)
 
     # memisahkan kalimat menjadi kata
-    tokenized_words_positif = word_tokenize(hasil_stemming_pos)
+    tokenized_words_positif = word_tokenize(training_set_positif)
 
     # menghilangkan kata yang tidak perlu
     stop_words = set(stopwords.words("bahasa"))
@@ -121,6 +121,7 @@ def klasifikasi(request, buku_id):
     for w in tokenized_words_positif:
         if w not in stop_words:
             filtered_sentence_positif.append(w)
+    context['filtered_sentence_positif'] = filtered_sentence_positif
 
     # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
     word_list = set(stopwords.words("wordlist"))
@@ -154,7 +155,7 @@ def klasifikasi(request, buku_id):
 
 
     training_set_negatif = ''
-    with open('media/{}'.format(selected_buku.training_set_positif)) as csvfile:
+    with open('media/{}'.format(selected_buku.training_set_negatif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         for row in csvreader:
             training_set_negatif += row['Review']
@@ -176,6 +177,7 @@ def klasifikasi(request, buku_id):
     for w in tokenized_words_negatif:
         if w not in stop_words:
             filtered_sentence_negatif.append(w)
+    context['filtered_sentence_negatif'] = filtered_sentence_negatif
 
     # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
     word_list = set(stopwords.words("wordlist"))
@@ -227,6 +229,7 @@ def klasifikasi(request, buku_id):
     factory = StemmerFactory()
     stemmer = factory.create_stemmer()
     hasil_stemming_test = stemmer.stem(testing_set)
+    print('hasil_stemming_test', hasil_stemming_test)
 
     # memisahkan kalimat menjadi kata
     tokenized_words_testing = word_tokenize(hasil_stemming_test)
@@ -237,6 +240,7 @@ def klasifikasi(request, buku_id):
     for w in tokenized_words_testing:
         if w not in stop_words:
             filtered_sentence_testing.append(w)
+    context['filtered_sentence_testing'] = filtered_sentence_testing
 
     # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
     word_list = set(stopwords.words("wordlist"))
@@ -334,7 +338,7 @@ def klasifikasi(request, buku_id):
     for x in cp_words_pos:
         product_cp_pos *=x #pengalian semua objek dalam list
     hasil_pos = selected_buku.priors_pos * product_cp_pos #pengalian hasil pengalian semua objek dalam list dengan priors
-    context['hasil_pos'] = hasil_pos
+    context['hasil_pos'] = float(hasil_pos)
 
     # save hasil akhir positif to django model field
     selected_hasil = Buku.objects.get(id=int(buku_id))
@@ -378,33 +382,33 @@ def hasil(request, buku_id):
 
     return render(request, 'classifyme/hasil.html', context)
 
-def register(request):
-    registered = False
-    if request.method == 'POST':
-        akun = AkunForm(request.POST)
-        if akun.is_valid():
-            akun = akun.save()
-            registered = True
-        else:
-            print(akun.errors)
-    else:
-        akun = AkunForm()
-    return render(request, 'classifyme/register.html', {'akun': akun, 'registered': registered})
-
-def login(request):
-    if request.method == 'POST':
-        username = request.POST.get('nama_pengguna')
-        password = request.POST.get('kata_sandi')
-        user = authenticate(username=username, password=password)
-        if user:
-            if user.is_active:
-                return HttpResponseRedirect('/classifyme/')
-            else:
-                return HttpResponse("Akun tidak terdaftar.")
-        else:
-            return HttpResponse("Nama pengguna dan kata sandi tidak sesuai.")
-    else:
-        return render(request, 'classifyme/login.html', {})
+# def register(request):
+#     registered = False
+#     if request.method == 'POST':
+#         akun = AkunForm(request.POST)
+#         if akun.is_valid():
+#             akun = akun.save()
+#             registered = True
+#         else:
+#             print(akun.errors)
+#     else:
+#         akun = AkunForm()
+#     return render(request, 'classifyme/register.html', {'akun': akun, 'registered': registered})
+#
+# def login(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('nama_pengguna')
+#         password = request.POST.get('kata_sandi')
+#         user = authenticate(username=username, password=password)
+#         if user:
+#             if user.is_active:
+#                 return HttpResponseRedirect('/classifyme/')
+#             else:
+#                 return HttpResponse("Akun tidak terdaftar.")
+#         else:
+#             return HttpResponse("Nama pengguna dan kata sandi tidak sesuai.")
+#     else:
+#         return render(request, 'classifyme/login.html', {})
 
 # jumlah kejadian kata w dalam kelas positif + 1
 # frequency_list = []
