@@ -5,15 +5,62 @@
   <div class="row">
     <div class="col-md-12">
 
-        <h4><strong>Proses Text Mining</strong></h4><br>
-        <h5 id="get">Judul Buku : {{ buku.judul }}</h4><br>
+      <div class="navbar" style="margin-left: 40px;">
+        <a href="{% url 'classifyme:data' %}" button type="button" class="btn btn-warning btn-sm">Lihat Data</a>
+      </div>
+
+        <h5 id="get" style="margin-left: 40px;">Judul Buku : {{ buku.judul }}</h5><br>
+
+        <h4 style="margin-left: 40px; border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Training Set</h4>
+        <br>
 
           <div class="tentang">
-            <h5 style="color: black"><strong>Training Set Positif : </strong></h5>
-
+            <h5 style="color: white; background-color: #337ab7; padding: 5px; margin-left: 35px;">Training Set Positif : </h5>
             <div>
               <textarea class="file">{{ training_set_positif }}</textarea>
             </div>
+            <br>
+
+            <!-- <h5 style="color: black"><strong>Case Folding Positif : </strong></h5>
+            <div>
+              <textarea class="file">{{ case_folding_pos }}</textarea>
+            </div>
+            <br>
+
+            <h5 style="color: black"><strong>Stemming Positif : </strong></h5>
+            <div>
+              <textarea class="file">{{ hasil_stemming_pos }}</textarea>
+            </div>
+
+            <h5 style="color: black"><strong>Tokenized Positif : </strong></h5>
+            <div>
+              <textarea class="file">{{ tokenized_words_positif }}</textarea>
+            </div>
+
+            <h5 style="color: black"><strong>Filtered Positif (Stopwords) : </strong></h5>
+            <div>
+              <textarea class="file">{{ filtered_sentence_positif }}</textarea>
+            </div> -->
+
+            <h5 style="color: black"><strong>Filtered Positif (Wordlist) : </strong></h5>
+            <div>
+              <textarea class="file">{{ filtered_word_positif }}</textarea>
+            </div>
+
+            <h5 style="color: black"><strong>Frekuensi Kata Training Set Positif  : </strong></h5>
+            <div>
+              <textarea class="file">
+                {% for wordfreq_positif in wordfreq_positif_list %}
+                "{{ wordfreq_positif.w }}" = {{ wordfreq_positif.cp }}
+                {% endfor %}
+              </textarea>
+            </div>
+
+            <h6 style="font-size: 15px"><strong>Jumlah Kata dalam Kelas Positif (count(c))</strong> : </h6>
+            <div>
+              <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_kata_positif }}</textarea>
+            </div>
+            <br>
             <br>
 
             <h6 style="font-size: 15px"><strong>Jumlah Training Set Positif (Nc) : </strong></h6>
@@ -24,11 +71,54 @@
           </div>
 
         <div class="tentang">
-          <h5 style="color: black"><strong>Training Set Negatif : </strong></h5>
-
+          <div style="margin-left: 30px;">
+            <h5 style="color: white; background-color: #337ab7; padding: 5px;">Training Set Negatif : </h5>
+          </div>
           <div>
             <textarea class="file">{{ training_set_negatif }}</textarea>
           </div>
+          <br>
+
+          <!-- <h5 style="color: black"><strong>Case Folding Negatif : </strong></h5>
+          <div>
+            <textarea class="file">{{ case_folding_neg }}</textarea>
+          </div>
+          <br>
+
+          <h5 style="color: black"><strong>Stemming Negatif : </strong></h5>
+          <div>
+            <textarea class="file">{{ hasil_stemming_neg }}</textarea>
+          </div>
+
+          <h5 style="color: black"><strong>Tokenized Negatif : </strong></h5>
+          <div>
+            <textarea class="file">{{ tokenized_words_negatif }}</textarea>
+          </div>
+
+          <h5 style="color: black"><strong>Filtered Negatif (Stopwords) : </strong></h5>
+          <div>
+            <textarea class="file">{{ filtered_sentence_negatif }}</textarea>
+          </div> -->
+
+          <h5 style="color: black"><strong>Filtered Negatif (Wordlist) : </strong></h5>
+          <div>
+            <textarea class="file">{{ filtered_word_negatif }}</textarea>
+          </div>
+
+          <h5 style="color: black"><strong>Frekuensi Kata Training Set Negatif : </strong></h5>
+          <div>
+            <textarea class="file">
+              {% for wordfreq_negatif in wordfreq_negatif_list %}
+              "{{ wordfreq_negatif.w }}" = {{ wordfreq_negatif.cp }}
+              {% endfor %}
+            </textarea>
+          </div>
+
+          <h6 style="font-size: 15px"><strong>Jumlah Kata dalam Kelas Negatif (count(c))</strong> : </h6>
+          <div>
+            <textarea class="jumlah" style="text-align: center; height: 20px;">{{ jumlah_kata_negatif }}</textarea>
+          </div>
+          <br>
           <br>
 
           <h6 style="font-size: 15px;"><strong>Jumlah Training Set Negatif (Nc) : </strong></h6>
@@ -44,7 +134,7 @@
         </div>
         <br>
 
-        <!-- <div class="tentang">
+        <div class="tentang">
           <h6 style="font-size: 15px;"><strong>Priors Positif (P(pos)) : </strong></h6>
           <div>
             <textarea class="jumlah" style="text-align: center; height: 20px;">{{ priors_pos }}</textarea>
@@ -58,14 +148,172 @@
           </div>
           <br>
           <br>
+        </div>
+
+        <h6 style="font-size: 15px; text-align: center;"><strong>Kata Unik : </strong></h6>
+        <div>
+          <textarea style="width: 100%; height: 100px;">{{ total_unique_words }}</textarea>
+        </div>
+        <br>
+        <br>
+
+        <h6 style="font-size: 15px; text-align: center;"><strong>Jumlah Kata Unik (|V|): </strong></h6>
+        <div>
+          <textarea class="jumlah" style="text-align: center; height: 20px; margin-left: 490px;">{{ wordfreq_sample_total }}</textarea>
+        </div>
+        <br>
+        <br>
+
+        <h4 style="margin-left: 40px; border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Testing Set</h4>
+        <br>
+
+        <h6 style="font-size: 15px; text-align: center;">Testing Set : </h6>
+        <div>
+          <textarea style="width: 100%; height: 100px;">{{ testing_set }}</textarea>
+        </div>
+        <br>
+
+        <!-- <h5 style="color: black; text-align: center;">Case Folding Testing Set : </h5>
+        <div>
+          <textarea class="file">{{ case_folding_test }}</textarea>
+        </div>
+        <br>
+
+        <h5 style="color: black; text-align: center">Stemming Testing Set : </h5>
+        <div>
+          <textarea class="file">{{ hasil_stemming_test }}</textarea>
+        </div>
+
+        <h5 style="color: black; text-align: center;">Tokenized Testing Set : </h5>
+        <div>
+          <textarea class="file">{{ tokenized_words_testing }}</textarea>
+        </div>
+
+        <h5 style="color: black; text-align: center;">Filtered Testing Set (Stopwords) : </h5>
+        <div>
+          <textarea class="file">{{ filtered_sentence_testing }}</textarea>
         </div> -->
 
+        <h6 style="font-size: 15px; text-align: center;">Hasil Preprocessing Testing Set (Wordlist) : </h6>
+        <div>
+          <textarea style="width: 100%; height: 100px;">{{ filtered_word_testing }}</textarea>
+        </div>
+        <br>
+        <br>
 
-        <h5 style="text-align: center">Klik tombol Proses untuk melanjutkan proses klasifikasi.</h5>
+        <!-- <h6 style="font-size: 15px; text-align: center;">Kata dalam data testing yang muncul di kelas positif DAN negatif : </h6>
+        <div>
+          <textarea style="width: 100%; height: 100px;">{{ list_dua_dua }}</textarea>
+        </div>
+        <br>
+        <br> -->
 
-        {% if user.is_authenticated %}
-          <a href="{% url 'classifyme:klasifikasi' buku.id %}" class="btn btn-default" style="margin-left: 515px;" role="button">Proses</a>
-        {% endif %}
+        <h6 style="font-size: 15px; text-align: center;">Frekuensi Kata Testing Set : </h6>
+        <div>
+          <textarea style="width: 25%; height: 150px; margin-left: 430px;">
+            {% for wordfreq_testing in wordfreq_testing_list %}
+            "{{ wordfreq_testing.w }}" = {{ wordfreq_testing.cp }}
+            {% endfor %}
+          </textarea>
+        </div>
+        <br>
+        <br>
+
+        <!-- <div class="container">
+          <div class="row"> -->
+            <!-- <div class="col-md-3">
+                <h6 style="font-size: 15px; text-align: center"><strong>Frekuensi Tiap Kata dalam Kelas Positif (count(w,pos))</strong> : </h6>
+                <div>
+                  <textarea style="width: 100%; height: 150px;">{{ wordfreq_positif_list }}</textarea><br>
+                </div>
+            </div> -->
+
+              <div class="tentang">
+                <!-- <h6 style="font-size: 15px; text-align: center">Jumlah Kejadian Kata dalam Kelas Positif (count(w,pos) : </h6>
+                <div>
+                  <textarea style="width: 100%; height: 150px;">
+                  </textarea><br>
+                </div> -->
+
+                <h6 style="font-size: 15px; text-align: center">Jumlah Kejadian Kata dalam Kelas Positif + 1 (count(w,pos)+1) : </h6>
+                <div>
+                  <textarea style="width: 100%; height: 300px;">
+                    {% for w,cp in wordfreq_test_in_pos.items %}
+                    "{{ w }}" = {{ cp }}
+                    {% endfor %}
+                  </textarea><br>
+                </div>
+              </div>
+
+              <!-- <div class="col-md-3">
+                <h6 style="font-size: 15px; text-align: center"><strong>Frekuensi Tiap Kata dalam Kelas Negatif (count(w,neg))</strong> : </h6>
+                <div>
+                  <textarea style="width: 100%; height: 150px;">{{ wordfreq_negatif_list }}</textarea><br>
+                </div>
+              </div> -->
+
+              <div class="tentang">
+                <!-- <h6 style="font-size: 15px; text-align: center">Jumlah Kejadian Kata dalam Kelas Negatif (count(w,neg) : </h6>
+                <div>
+                  <textarea style="width: 100%; height: 150px;">{{ wordfreq_negatif_list }}</textarea><br>
+                </div> -->
+
+                <h6 style="font-size: 15px; text-align: center">Jumlah Kejadian Kata dalam Kelas Negatif + 1 (count(w,neg)+1) : </h6>
+                <div>
+                  <textarea style="width: 100%; height: 300px;">
+                    {% for w,cp in wordfreq_test_in_neg.items %}
+                    "{{ w }}" = {{ cp }}
+                    {% endfor %}
+                  </textarea><br>
+                </div>
+              </div>
+          <!-- </div>
+        </div> -->
+        <br>
+        <br>
+
+        <div class="tentang">
+          <h6 style="font-size: 15px; text-align: center;">Conditional Probabilities Positif (P(w|pos)) : </h6>
+          <div>
+            <textarea style="width: 100%; height: 300px;">
+              {% for w,cp_hasil in cp_pos_list.items %}
+                "{{ w }}" = {{ cp_hasil }}
+              {% endfor %}
+            </textarea>
+          </div>
+          <br>
+          <br>
+
+          <h6 style="font-size: 15px; text-align: center;">Hasil Klasifikasi kelas Positif : </h6>
+          <div>
+            <textarea class="jumlah" style="text-align: center; width: 50%; height: 20px;">{{ hasil_pos }}</textarea>
+          </div>
+          <br>
+          <br>
+        </div>
+
+        <div class="tentang">
+          <h6 style="font-size: 15px; text-align: center;">Conditional Probabilities Negatif (P(w|neg)) : </h6>
+          <div>
+            <textarea style="width: 100%; height: 300px;">
+              {% for w,cp_hasil in cp_neg_list.items %}
+                "{{ w }}" = {{ cp_hasil }}
+              {% endfor %}
+            </textarea>
+          </div>
+          <br>
+          <br>
+
+          <h6 style="font-size: 15px; text-align: center;">Hasil Klasifikasi kelas Negatif : </h6>
+          <div>
+            <textarea class="jumlah" style="text-align: center; width: 50%; height: 20px;">{{ hasil_neg }}</textarea>
+          </div>
+          <br>
+          <br>
+        </div>
+
+        <h6 style="text-align: center; color: grey;">Klik tombol Proses untuk melanjutkan proses klasifikasi.</h6>
+        <a href="{% url 'classifyme:hasil' buku.id %}" class="btn btn-warning" style="margin-left: 515px;" role="button">Proses</a>
         <br>
         <br>
         <br>

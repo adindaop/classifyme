@@ -41,8 +41,7 @@ def textmining(request, buku_id):
     selected_buku = Buku.objects.get(id=int(buku_id))
     context['buku'] = selected_buku
 
-    print(selected_buku.training_set_positif)
-
+    #print(selected_buku.training_set_positif)
     training_set_positif = ''
     with open('media/{}'.format(selected_buku.training_set_positif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
@@ -55,8 +54,53 @@ def textmining(request, buku_id):
     context['training_set_positif'] = training_set_positif
     # context['jumlah_positif'] = jumlah_positif
 
-    print(selected_buku.training_set_negatif)
+    # mengubah semua kata menjadi lowercase
+    case_folding_pos = training_set_positif.lower()
+    context['case_folding_pos'] = case_folding_pos
 
+    # menghilangkan imbuhan kata (try Sastrawi)
+    # factory = StemmerFactory()
+    # stemmer = factory.create_stemmer()
+    # hasil_stemming_pos = stemmer.stem(case_folding_pos)
+    # context['hasil_stemming_pos'] = hasil_stemming_pos
+
+    # memisahkan kalimat menjadi kata
+    tokenized_words_positif = word_tokenize(case_folding_pos)
+    context['tokenized_words_positif'] = tokenized_words_positif
+
+    # menghilangkan kata yang tidak perlu
+    stop_words = set(stopwords.words("bahasa"))
+    filtered_sentence_positif = []
+    for w in tokenized_words_positif:
+        if w not in stop_words:
+            filtered_sentence_positif.append(w)
+    context['filtered_sentence_positif'] = filtered_sentence_positif
+
+    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
+    word_list = set(stopwords.words("wordlist"))
+    filtered_word_positif = []
+    for a in filtered_sentence_positif:
+        if a in word_list:
+            filtered_word_positif.append(a)
+    context['filtered_word_positif'] = filtered_word_positif
+
+    # count(w, training_pos)
+    word_counts = collections.Counter(filtered_word_positif)
+    wordfreq_positif_list = []
+    for w, cp in sorted(word_counts.items()):
+        wordfreq_positif_list.append({'w': w, 'cp': cp})
+    context['wordfreq_positif_list'] = wordfreq_positif_list
+
+    # save preprocessing positif result to django model field
+    selected_preprocessing = Buku.objects.get(id=int(buku_id))
+    selected_preprocessing.hasil_preprocessing_pos = filtered_word_positif
+    selected_preprocessing.save()
+
+    # count(positif) / (untuk FreqDist's total outcomes)
+    jumlah_kata_positif = len(filtered_word_positif)
+    context['jumlah_kata_positif'] = jumlah_kata_positif
+
+    #print(selected_buku.training_set_negatif)
     training_set_negatif = ''
     with open('media/{}'.format(selected_buku.training_set_negatif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
@@ -68,6 +112,52 @@ def textmining(request, buku_id):
     context['total_row_negatif'] = total_row_negatif
     context['training_set_negatif'] = training_set_negatif
     # context['jumlah_negatif'] = jumlah_negatif
+
+    # mengubah semua kata menjadi lowercase
+    case_folding_neg = training_set_negatif.lower()
+    context['case_folding_neg'] = case_folding_neg
+
+    # menghilangkan imbuhan kata (try Sastrawi)
+    # factory = StemmerFactory()
+    # stemmer = factory.create_stemmer()
+    # hasil_stemming_neg = stemmer.stem(training_set_negatif)
+    # context['hasil_stemming_neg'] = hasil_stemming_neg
+
+    # memisahkan kalimat menjadi kata
+    tokenized_words_negatif = word_tokenize(case_folding_neg)
+    context['tokenized_words_negatif'] = tokenized_words_negatif
+
+    # menghilangkan kata yang tidak perlu
+    stop_words = set(stopwords.words("bahasa"))
+    filtered_sentence_negatif = []
+    for w in tokenized_words_negatif:
+        if w not in stop_words:
+            filtered_sentence_negatif.append(w)
+    context['filtered_sentence_negatif'] = filtered_sentence_negatif
+
+    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
+    word_list = set(stopwords.words("wordlist"))
+    filtered_word_negatif = []
+    for a in filtered_sentence_negatif:
+        if a in word_list:
+            filtered_word_negatif.append(a)
+    context['filtered_word_negatif'] = filtered_word_negatif
+
+    # count(w, training_neg)
+    word_counts = collections.Counter(filtered_word_negatif)
+    wordfreq_negatif_list = []
+    for w, cp in sorted(word_counts.items()):
+        wordfreq_negatif_list.append({'w': w, 'cp': cp})
+    context['wordfreq_negatif_list'] = wordfreq_negatif_list
+
+    # save preprocessing negatif result to django model field
+    selected_preprocessing = Buku.objects.get(id=int(buku_id))
+    selected_preprocessing.hasil_preprocessing_neg = filtered_word_negatif
+    selected_preprocessing.save()
+
+    # count(negatif) / (untuk FreqDist's total outcomes)
+    jumlah_kata_negatif = len(filtered_word_negatif)
+    context['jumlah_kata_negatif'] = jumlah_kata_negatif
 
     # total ulasan
     total_ulasan = total_row_positif + total_row_negatif
@@ -91,118 +181,6 @@ def textmining(request, buku_id):
     selected_priors.priors_neg = priors_neg
     selected_priors.save()
 
-    return render(request, 'classifyme/textmining.html', context)
-
-def klasifikasi(request, buku_id):
-    context = {}
-    selected_buku = Buku.objects.get(id=int(buku_id))
-    context['buku'] = selected_buku
-
-    training_set_positif = ''
-    with open('media/{}'.format(selected_buku.training_set_positif.file)) as csvfile:
-        csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
-        for row in csvreader:
-            training_set_positif += row['Review']
-
-    # mengubah semua kata menjadi lowercase
-    case_folding_pos = training_set_positif.lower()
-
-    # menghilangkan imbuhan kata (try Sastrawi)
-    factory = StemmerFactory()
-    stemmer = factory.create_stemmer()
-    hasil_stemming_pos = stemmer.stem(training_set_positif)
-
-    # memisahkan kalimat menjadi kata
-    tokenized_words_positif = word_tokenize(training_set_positif)
-
-    # menghilangkan kata yang tidak perlu
-    stop_words = set(stopwords.words("bahasa"))
-    filtered_sentence_positif = []
-    for w in tokenized_words_positif:
-        if w not in stop_words:
-            filtered_sentence_positif.append(w)
-    context['filtered_sentence_positif'] = filtered_sentence_positif
-
-    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
-    word_list = set(stopwords.words("wordlist"))
-    filtered_word_positif = []
-    for a in filtered_sentence_positif:
-        if a in word_list:
-            filtered_word_positif.append(a)
-
-    context['filtered_word_positif'] = filtered_word_positif
-
-    # bigrams = list(ngrams(filtered_word,2))
-
-    # count(positif) / (untuk FreqDist's total outcomes)
-    jumlah_kata_positif = len(filtered_word_positif)
-    context['jumlah_kata_positif'] = jumlah_kata_positif
-
-    # FreqDist's total samples
-    wordfreq_positif = nltk.FreqDist(filtered_word_positif)
-    wordfreq_sample_positif = 0
-    for sample in wordfreq_positif:
-        wordfreq_sample_positif += 1
-        # print('wordfreq_sample_positif', wordfreq_sample_positif)
-    context['wordfreq_sample_positif'] = wordfreq_sample_positif
-
-    #count(w,positif)
-    # word_counts = collections.Counter(filtered_word_positif)
-    # wordfreq_positif_list = ''
-    # for word, count in sorted(word_counts.items()):
-    #     wordfreq_positif_list += '"%s" = %d\n' % (word, count)
-    # context['wordfreq_positif_list'] = wordfreq_positif_list
-
-
-    training_set_negatif = ''
-    with open('media/{}'.format(selected_buku.training_set_negatif.file)) as csvfile:
-        csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
-        for row in csvreader:
-            training_set_negatif += row['Review']
-
-    # mengubah semua kata menjadi lowercase
-    case_folding = training_set_negatif.lower()
-
-    # menghilangkan imbuhan kata (try Sastrawi)
-    factory = StemmerFactory()
-    stemmer = factory.create_stemmer()
-    hasil_stemming_neg = stemmer.stem(training_set_negatif)
-
-    # memisahkan kalimat menjadi kata
-    tokenized_words_negatif = word_tokenize(hasil_stemming_neg)
-
-    # menghilangkan kata yang tidak perlu
-    stop_words = set(stopwords.words("bahasa"))
-    filtered_sentence_negatif = []
-    for w in tokenized_words_negatif:
-        if w not in stop_words:
-            filtered_sentence_negatif.append(w)
-    context['filtered_sentence_negatif'] = filtered_sentence_negatif
-
-    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
-    word_list = set(stopwords.words("wordlist"))
-    filtered_word_negatif = []
-    for a in filtered_sentence_negatif:
-        if a in word_list:
-            filtered_word_negatif.append(a)
-
-    context['filtered_word_negatif'] = filtered_word_negatif
-
-    # count(negatif) / (untuk FreqDist's total outcomes)
-    jumlah_kata_negatif = len(filtered_word_negatif)
-    context['jumlah_kata_negatif'] = jumlah_kata_negatif
-
-    # untuk FreqDist's total samples
-    wordfreq_negatif = nltk.FreqDist(filtered_word_negatif)
-    wordfreq_sample_negatif = 0
-    for sample in wordfreq_negatif:
-        wordfreq_sample_negatif += 1
-    context['wordfreq_sample_negatif'] = wordfreq_sample_negatif
-
-    # untuk (samples, outcomes)'s list
-    # wordfreq_negatif_list = wordfreq_negatif.most_common()
-    # context['wordfreq_negatif_list'] = wordfreq_negatif_list
-
     # unique words lists
     unique_words = filtered_word_positif + filtered_word_negatif
     unique_wordfreq_total = nltk.FreqDist(unique_words)
@@ -216,23 +194,27 @@ def klasifikasi(request, buku_id):
         wordfreq_sample_total += 1
     context['wordfreq_sample_total'] = wordfreq_sample_total
 
+    # print(selected_buku.testing_set)
     testing_set = ''
     with open('media/{}'.format(selected_buku.testing_set)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         for row in csvreader:
             testing_set += row['Review']
+    context['testing_set'] = testing_set
 
     # mengubah semua kata menjadi lowercase
-    case_folding = testing_set.lower()
+    case_folding_test = testing_set.lower()
+    context['case_folding_test'] = case_folding_test
 
     # menghilangkan imbuhan kata (try Sastrawi)
-    factory = StemmerFactory()
-    stemmer = factory.create_stemmer()
-    hasil_stemming_test = stemmer.stem(testing_set)
-    print('hasil_stemming_test', hasil_stemming_test)
+    # factory = StemmerFactory()
+    # stemmer = factory.create_stemmer()
+    # hasil_stemming_test = stemmer.stem(testing_set)
+    # context['hasil_stemming_test'] = hasil_stemming_test
 
     # memisahkan kalimat menjadi kata
-    tokenized_words_testing = word_tokenize(hasil_stemming_test)
+    tokenized_words_testing = word_tokenize(case_folding_test)
+    context['tokenized_words_testing'] = tokenized_words_testing
 
     # menghilangkan kata yang tidak perlu
     stop_words = set(stopwords.words("bahasa"))
@@ -248,89 +230,58 @@ def klasifikasi(request, buku_id):
     for a in filtered_sentence_testing:
         if a in word_list:
             filtered_word_testing.append(a)
-
     context['filtered_word_testing'] = filtered_word_testing
 
-    # kata dalam data testing yang muncul di kelas positif DAN negatif
-    list_dua_dua = []
-    for elem in filtered_word_testing:
-        if elem in filtered_word_positif and elem in filtered_word_negatif:
-            if elem not in list_dua_dua:
-                list_dua_dua.append(elem)
-    context['list_dua_dua'] = list_dua_dua
-
-    # count(w, positif)
-    word_counts = collections.Counter(filtered_word_positif)
-    wordfreq_positif_list = ''
-    for w, c in sorted(word_counts.items()):
-        if w in list_dua_dua:
-            wordfreq_positif_list += '"%s" = %d\n' % (w, c)
-    context['wordfreq_positif_list'] = wordfreq_positif_list
-
-    # count(w, testing_pos)
+    # count(w, testing)
     word_counts = collections.Counter(filtered_word_testing)
     wordfreq_testing_list = []
     for w, cp in sorted(word_counts.items()):
-        if w in list_dua_dua:
-            # wordfreq_testing_list += '"{}" = {}\n'.format(w, c)
-            wordfreq_testing_list.append({'w': w, 'cp': cp})
+        wordfreq_testing_list.append({'w': w, 'cp': cp})
     context['wordfreq_testing_list'] = wordfreq_testing_list
 
     # count(w,positif) + 1
-    word_counts = collections.Counter(filtered_word_positif)
-    wordfreq_positif_list_plus = ''
-    for w, c in sorted(word_counts.items()):
-        if w in list_dua_dua:
-            wordfreq_positif_list_plus += '"%s" = %d\n' % (w, c+1)
-    context['wordfreq_positif_list_plus'] = wordfreq_positif_list_plus
-
-    # count(w,negatif)
-    word_counts = collections.Counter(filtered_word_negatif)
-    wordfreq_negatif_list = ''
-    for w, c in sorted(word_counts.items()):
-        if w in list_dua_dua:
-            wordfreq_negatif_list += '"%s" = %d\n' % (w, c)
-    context['wordfreq_negatif_list'] = wordfreq_negatif_list
+    wordfreq_test_in_pos = {}
+    for item_testing in wordfreq_testing_list:
+        for item_positif in wordfreq_positif_list:
+            if item_testing['w'] == item_positif['w'] :
+                cp=(item_positif['cp']+1)
+                wordfreq_test_in_pos[item_testing['w']] = cp
+            elif item_testing['w'] != item_positif['w'] and item_testing['w'] not in wordfreq_test_in_pos:
+                wordfreq_test_in_pos[item_testing['w']] = 1
+    context['wordfreq_test_in_pos'] = wordfreq_test_in_pos
 
     # count(w,negatif) + 1
-    word_counts = collections.Counter(filtered_word_negatif)
-    wordfreq_negatif_list_plus = ''
-    for w, c in sorted(word_counts.items()):
-        if w in list_dua_dua:
-            wordfreq_negatif_list_plus += '"%s" = %d\n' % (w, c+1)
-    context['wordfreq_negatif_list_plus'] = wordfreq_negatif_list_plus
-
-    coba = float(jumlah_kata_positif + wordfreq_sample_total)
-    context['coba'] = coba
+    wordfreq_test_in_neg = {}
+    for item_testing in wordfreq_testing_list:
+        for item_negatif in wordfreq_negatif_list:
+            if item_testing['w'] == item_negatif['w'] :
+                cp = (item_negatif['cp']+1)
+                wordfreq_test_in_neg[item_testing['w']] = cp
+            elif item_testing['w'] != item_negatif['w'] and item_testing['w'] not in wordfreq_test_in_neg:
+                wordfreq_test_in_neg[item_testing['w']] = 1
+    context['wordfreq_test_in_neg'] = wordfreq_test_in_neg
 
     # conditional probabilities positif
-    word_counts = collections.Counter(filtered_word_positif)
-    cp_pos_list = []
-    for w, c in sorted(word_counts.items()):
-        cp_pembilang = c+1
+    cp_pos_list = {}
+    for w, cp in wordfreq_test_in_pos.items():
+        cp_pembilang = cp
         cp_penyebut = jumlah_kata_positif + wordfreq_sample_total
-        cp = float(cp_pembilang/cp_penyebut)
-        if w in list_dua_dua:
-            cp_pos_list.append({'w': w, 'cp': cp})
-            # cp_pos += '"{}" = {}\n'.format(w, cp)
-            # cp_pos += '"%s" = %f\n' % (w, cp) -> ini kalau cuma mau nampilin bbrp angka di belakang koma (ga lengkap)
+        cp_hasil = float(cp_pembilang/cp_penyebut)
+        cp_pos_list[w] = cp_hasil
     context['cp_pos_list'] = cp_pos_list
 
     # conditional probabilities negatif
-    word_counts = collections.Counter(filtered_word_negatif)
-    cp_neg_list = []
-    for w, c in sorted(word_counts.items()):
-        cp_pembilang = c+1
+    cp_neg_list = {}
+    for w, cp in wordfreq_test_in_neg.items():
+        cp_pembilang = cp
         cp_penyebut = jumlah_kata_negatif + wordfreq_sample_total
-        cp = float(cp_pembilang/cp_penyebut)
-        if w in list_dua_dua:
-            cp_neg_list.append({'w': w, 'cp': cp})
+        cp_hasil = float(cp_pembilang/cp_penyebut)
+        cp_neg_list[w] = cp_hasil
     context['cp_neg_list'] = cp_neg_list
-    print(cp_neg_list, 'cp_neg_list')
 
     # hasil akhir positif
     product_cp_pos = 1
-    cp_words_pos = []
+    cp_words_pos = {}
     i = 0
     while i < len(cp_pos_list):
         cp_words_pos.append(cp_pos_list[i]['cp'] ** wordfreq_testing_list[i]['cp']) #cp**jumlah_kata
@@ -340,29 +291,29 @@ def klasifikasi(request, buku_id):
     hasil_pos = selected_buku.priors_pos * product_cp_pos #pengalian hasil pengalian semua objek dalam list dengan priors
     context['hasil_pos'] = float(hasil_pos)
 
-    # save hasil akhir positif to django model field
-    selected_hasil = Buku.objects.get(id=int(buku_id))
-    selected_hasil.hasil_pos = hasil_pos
-    selected_hasil.save()
+    # # save hasil akhir positif to django model field
+    # selected_hasil = Buku.objects.get(id=int(buku_id))
+    # selected_hasil.hasil_pos = hasil_pos
+    # selected_hasil.save()
 
     # hasil akhir negatif
-    product_cp_neg = 1
-    cp_words_neg = []
-    i = 0
-    while i < len(cp_neg_list):
-        cp_words_neg.append(cp_neg_list[i]['cp'] ** wordfreq_testing_list[i]['cp']) #cp**jumlah_kata
-        i += 1
-    for x in cp_words_neg:
-        product_cp_neg *=x #pengalian semua objek dalam list
-    hasil_neg = selected_buku.priors_neg * product_cp_neg #pengalian hasil pengalian semua objek dalam list dengan priors
-    context['hasil_neg'] = hasil_neg
+    # product_cp_neg = 1
+    # cp_words_neg = []
+    # i = 0
+    # while i < len(cp_neg_list):
+    #     cp_words_neg.append(cp_neg_list[i]['cp'] ** wordfreq_testing_list[i]['cp']) #cp**jumlah_kata
+    #     i += 1
+    # for x in cp_words_neg:
+    #     product_cp_neg *=x #pengalian semua objek dalam list
+    # hasil_neg = selected_buku.priors_neg * product_cp_neg #pengalian hasil pengalian semua objek dalam list dengan priors
+    # context['hasil_neg'] = hasil_neg
+    #
+    # # save hasil akhir negatif to django model field
+    # selected_hasil = Buku.objects.get(id=int(buku_id))
+    # selected_hasil.hasil_neg = hasil_neg
+    # selected_hasil.save()
 
-    # save hasil akhir negatif to django model field
-    selected_hasil = Buku.objects.get(id=int(buku_id))
-    selected_hasil.hasil_neg = hasil_neg
-    selected_hasil.save()
-
-    return render(request, 'classifyme/klasifikasi.html', context)
+    return render(request, 'classifyme/textmining.html', context)
 
 def hasil(request, buku_id):
     context = {}
@@ -371,8 +322,10 @@ def hasil(request, buku_id):
 
     if selected_buku.hasil_pos > selected_buku.hasil_neg:
         hasil_akhir = "Positif"
-    else:
+    elif selected_buku.hasil_pos < selected_buku.hasil_neg:
         hasil_akhir = "Negatif"
+    else:
+        hasil_akhir = "Tidak Terdefinisi"
     context['hasil_akhir'] = hasil_akhir
 
     #save hasil akhir to django model field
@@ -381,51 +334,3 @@ def hasil(request, buku_id):
     selected_hasil.save()
 
     return render(request, 'classifyme/hasil.html', context)
-
-# def register(request):
-#     registered = False
-#     if request.method == 'POST':
-#         akun = AkunForm(request.POST)
-#         if akun.is_valid():
-#             akun = akun.save()
-#             registered = True
-#         else:
-#             print(akun.errors)
-#     else:
-#         akun = AkunForm()
-#     return render(request, 'classifyme/register.html', {'akun': akun, 'registered': registered})
-#
-# def login(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('nama_pengguna')
-#         password = request.POST.get('kata_sandi')
-#         user = authenticate(username=username, password=password)
-#         if user:
-#             if user.is_active:
-#                 return HttpResponseRedirect('/classifyme/')
-#             else:
-#                 return HttpResponse("Akun tidak terdaftar.")
-#         else:
-#             return HttpResponse("Nama pengguna dan kata sandi tidak sesuai.")
-#     else:
-#         return render(request, 'classifyme/login.html', {})
-
-# jumlah kejadian kata w dalam kelas positif + 1
-# frequency_list = []
-# for q in filtered_word_positif:
-#     frequency_list.append(filtered_word_positif.count(q))
-# context['frequency_list'] = frequency_list
-# frequency_list_plus = [x+1 for x in frequency_list]
-# context['frequency_list_plus'] = frequency_list_plus
-
-# pairs for [filtered_word_positif, frequency_list_plus] + 1
-# pairs = str(list(zip(filtered_word_positif, frequency_list_plus)))
-# context['pairs'] = pairs
-
-# jumlah kejadian kata w dalam kelas positif
-# wordfreq = []
-# for w in filtered_word_positif:
-#     wordfreq.append(filtered_word_positif.count(w))
-# frequency_positif = str(wordfreq)
-# frequency_word_positif = str(list(zip(filtered_word_positif, wordfreq)))
-# context['frequency_word_positif'] = frequency_word_positif

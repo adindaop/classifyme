@@ -1,19 +1,6 @@
 {% extends 'classifyme/base.html' %}
 {% block content %}
 
-<!-- <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">ClassifyMe!</a>
-    </div>
-    {% if user.is_authenticated %}
-    <ul class="nav navbar-nav navbar-right" id="demo">
-      <p>Halo, {{request.user.username}}</p>
-    </ul>
-    {% endif %}
-  </div>
-</nav> -->
-
 <div class="content container">
   <div class="row">
     <div class="col-md-12">
@@ -22,28 +9,20 @@
         <ul style="list-style-type: none;">
           <li>
             <div class="navbar">
-              <i class="glyphicon glyphicon-home"></i>
-              <a href="{% url 'classifyme:home' %}">Beranda</a>
-              <div class="navbar-right">
-                <a href="{% url 'classifyme:data' %}">Lihat Data</a>
-                <i class="glyphicon glyphicon-arrow-right"></i>
-              </div>
+              <a href="{% url 'classifyme:home' %}" button type="button" class="btn btn-warning btn-sm">Beranda</a>
+              <a href="{% url 'classifyme:data' %}" button type="button" class="btn btn-warning btn-sm">Lihat Data</a>
             </div>
           </li>
         </ul>
       </div>
 
-      <h4><strong>Input Buku</strong></h4>
+      <h4 style="margin-left: 45px; border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Input Buku</h4>
       <br>
       <br>
       <form method="POST" enctype="multipart/form-data" class="buku-form">{% csrf_token %}
         {{ form.as_p }}
-        <h5 style="margin-left: 290px">Unggah file dengan format .csv</h5>
-        <br>
-        <br>
-        <div class="button1">
-          <button type="submit" class="save btn btn-default"><a href="{% url 'classifyme:data' %}">Simpan</a></button>
-        </div>
+        <h6 style="margin-left: 45px; font-size: 10px; color: grey;">Unggah file dengan format .csv</h5>
+        <button type="submit" class="save btn btn-default btn-sm" style="margin-left: 520px"><a href="{% url 'classifyme:data' %}">Simpan</a></button>
         <br>
         <br>
         <br>

@@ -5,21 +5,15 @@
   <div class="row">
     <div class="col-md-12">
 
-        <h4><strong>Hasil Klasifikasi</strong></h4><br><br><br>
-
-        <h5 id="hasil" style="text-align: center">Resensi termasuk dalam kelas : {{ hasil_akhir }}</h5><br>
-        <!-- <h5 id="hasil">Buku {{ buku.judul }} termasuk dalam kelas : {{ hasil_akhir }}</h5><br> -->
-
-        <h5 style="text-align: center">Klik tombol Simpan untuk menyimpan hasil klasifikasi dan keluar dari aplikasi.</h5>
-
-      <div class="button2">
-        {% if user.is_authenticated %}
-          <a href="{% url 'classifyme:home' %}" class="btn btn-default" role="button">Simpan</a>
-        {% endif %}
+      <h4 style="margin-left: 40px; border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Hasil Klasifikasi</h4>
+      <br>
+        <h5 style="text-align: center; font-size: 20px;">Testing set dari buku "{{ buku.judul }}" termasuk dalam kelas : <strong>{{ hasil_akhir }}<strong></h5>
+        <br>
+        <h6 style="text-align: center; color: grey;">Klik tombol Selesai untuk menyimpan hasil klasifikasi dan keluar dari aplikasi.</h5>
+        <a href="{% url 'classifyme:input' %}" class="save btn btn-warning" role="button" style="margin-left: 515px;">Selesai</a>
         <br>
         <br>
         <br>
-      </div>
     </div>
   </div>
 </div>
