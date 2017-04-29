@@ -212,7 +212,7 @@
         <div>
           <textarea style="width: 25%; height: 150px; margin-left: 430px;">
             {% for wordfreq_testing in wordfreq_testing_list %}
-            "{{ wordfreq_testing.w }}" = {{ wordfreq_testing.cp }}
+            "{{ wordfreq_testing.w }}" = {{ wordfreq_testing.freq_test }}
             {% endfor %}
           </textarea>
         </div>
@@ -276,8 +276,8 @@
           <h6 style="font-size: 15px; text-align: center;">Conditional Probabilities Positif (P(w|pos)) : </h6>
           <div>
             <textarea style="width: 100%; height: 300px;">
-              {% for w,cp_hasil in cp_pos_list.items %}
-                "{{ w }}" = {{ cp_hasil }}
+              {% for w, pangkat in cp_pos_list.items %}
+                "{{ w }}" = {{ pangkat }}
               {% endfor %}
             </textarea>
           </div>
@@ -296,9 +296,9 @@
           <h6 style="font-size: 15px; text-align: center;">Conditional Probabilities Negatif (P(w|neg)) : </h6>
           <div>
             <textarea style="width: 100%; height: 300px;">
-              {% for w,cp_hasil in cp_neg_list.items %}
-                "{{ w }}" = {{ cp_hasil }}
-              {% endfor %}
+              {% for w,pangkat in cp_neg_list.items %}
+                "{{ w }}" = {{ pangkat }}
+              {% endfor %}}}
             </textarea>
           </div>
           <br>

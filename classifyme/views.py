@@ -7,9 +7,11 @@ from .models import Buku
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 import nltk
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, regexp_tokenize
 from nltk.corpus import stopwords
 from nltk.util import ngrams
+import operator
+import functools
 import collections
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
@@ -202,41 +204,23 @@ def textmining(request, buku_id):
             testing_set += row['Review']
     context['testing_set'] = testing_set
 
-    # mengubah semua kata menjadi lowercase
-    case_folding_test = testing_set.lower()
-    context['case_folding_test'] = case_folding_test
-
-    # menghilangkan imbuhan kata (try Sastrawi)
-    # factory = StemmerFactory()
-    # stemmer = factory.create_stemmer()
-    # hasil_stemming_test = stemmer.stem(testing_set)
-    # context['hasil_stemming_test'] = hasil_stemming_test
-
-    # memisahkan kalimat menjadi kata
-    tokenized_words_testing = word_tokenize(case_folding_test)
-    context['tokenized_words_testing'] = tokenized_words_testing
-
-    # menghilangkan kata yang tidak perlu
-    stop_words = set(stopwords.words("bahasa"))
-    filtered_sentence_testing = []
-    for w in tokenized_words_testing:
-        if w not in stop_words:
-            filtered_sentence_testing.append(w)
-    context['filtered_sentence_testing'] = filtered_sentence_testing
-
-    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
-    word_list = set(stopwords.words("wordlist"))
     filtered_word_testing = []
-    for a in filtered_sentence_testing:
-        if a in word_list:
-            filtered_word_testing.append(a)
+    stop_words = set(stopwords.words("bahasa"))
+    word_list = set(stopwords.words("wordlist"))
+    case_folding_test = testing_set.lower() #mengubah semua kata menjadi lowercase
+    tokenized_words_testing = word_tokenize(case_folding_test) #memisahkan kalimat menjadi kata
+    for w in tokenized_words_testing:
+        if w not in stop_words and w in word_list: #filtering
+            filtered_word_testing.append(w)
+            print('filtered_word_testing', filtered_word_testing)
     context['filtered_word_testing'] = filtered_word_testing
 
     # count(w, testing)
     word_counts = collections.Counter(filtered_word_testing)
     wordfreq_testing_list = []
-    for w, cp in sorted(word_counts.items()):
-        wordfreq_testing_list.append({'w': w, 'cp': cp})
+    for w, freq_test in sorted(word_counts.items()):
+        wordfreq_testing_list.append({'w': w, 'freq_test': freq_test})
+    print('wordfreq_testing_list', wordfreq_testing_list)
     context['wordfreq_testing_list'] = wordfreq_testing_list
 
     # count(w,positif) + 1
@@ -244,10 +228,11 @@ def textmining(request, buku_id):
     for item_testing in wordfreq_testing_list:
         for item_positif in wordfreq_positif_list:
             if item_testing['w'] == item_positif['w'] :
-                cp=(item_positif['cp']+1)
+                cp = (item_positif['cp']+1)
                 wordfreq_test_in_pos[item_testing['w']] = cp
             elif item_testing['w'] != item_positif['w'] and item_testing['w'] not in wordfreq_test_in_pos:
-                wordfreq_test_in_pos[item_testing['w']] = 1
+                cp = 1
+                wordfreq_test_in_pos[item_testing['w']] = cp
     context['wordfreq_test_in_pos'] = wordfreq_test_in_pos
 
     # count(w,negatif) + 1
@@ -258,60 +243,70 @@ def textmining(request, buku_id):
                 cp = (item_negatif['cp']+1)
                 wordfreq_test_in_neg[item_testing['w']] = cp
             elif item_testing['w'] != item_negatif['w'] and item_testing['w'] not in wordfreq_test_in_neg:
-                wordfreq_test_in_neg[item_testing['w']] = 1
+                cp = 1
+                wordfreq_test_in_neg[item_testing['w']] = cp
     context['wordfreq_test_in_neg'] = wordfreq_test_in_neg
 
-    # conditional probabilities positif
+    # perhitungan klasifikasi positif
     cp_pos_list = {}
+    pemangkat = {}
+    pangkat = {}
     for w, cp in wordfreq_test_in_pos.items():
-        cp_pembilang = cp
-        cp_penyebut = jumlah_kata_positif + wordfreq_sample_total
-        cp_hasil = float(cp_pembilang/cp_penyebut)
-        cp_pos_list[w] = cp_hasil
+        pembilang = cp
+        penyebut = jumlah_kata_positif + wordfreq_sample_total
+        hasil = float(pembilang/penyebut) #conditional probabilities
+        for item_testing in wordfreq_testing_list:
+            if w not in pemangkat:
+                pemangkat = item_testing['w'], item_testing['freq_test'], hasil #memanggil pangkat untuk setiap kata
+                pangkat = hasil ** item_testing['freq_test'] #memangkatkan cp setiap kata dengan jumlah kata dalam testing set
+                cp_pos_list[w] = pangkat
+        result = 1
+        for pangkat in cp_pos_list:
+            result = result * cp_pos_list[pangkat] #mengalikan semua value
+            result_final_pos = selected_buku.priors_pos * result
     context['cp_pos_list'] = cp_pos_list
 
-    # conditional probabilities negatif
+    # save hasil akhir positif to django model field
+    selected_hasil = Buku.objects.get(id=int(buku_id))
+    selected_hasil.hasil_pos = result_final_pos
+    selected_hasil.save()
+
+    # perhitungan klasifikasi negatif
     cp_neg_list = {}
+    pemangkat = {}
+    pangkat_neg = {}
     for w, cp in wordfreq_test_in_neg.items():
-        cp_pembilang = cp
-        cp_penyebut = jumlah_kata_negatif + wordfreq_sample_total
-        cp_hasil = float(cp_pembilang/cp_penyebut)
-        cp_neg_list[w] = cp_hasil
+        pembilang_neg = cp
+        penyebut_neg = jumlah_kata_negatif + wordfreq_sample_total
+        hasil_neg = float(pembilang_neg/penyebut_neg) #conditional probabilities
+        for item_testing in wordfreq_testing_list:
+            if w not in pemangkat:
+                pemangkat = item_testing['w'], item_testing['freq_test'], hasil_neg #memanggil pangkat untuk setiap kata
+                pangkat_neg = hasil_neg ** item_testing['freq_test'] #memangkatkan cp setiap kata dengan jumlah kata dalam testing set
+                cp_neg_list[w] = pangkat_neg
+                result_neg = 1
+                for pangkat_neg in cp_neg_list:
+                    result_neg = result_neg * cp_neg_list[pangkat_neg] #mengalikan semua value
+                    result_final_neg = selected_buku.priors_neg * result_neg
+        # print('hasil', hasil)
+        # print('hasil_neg', hasil_neg)
+        # print('pemangkat', pemangkat)
+        # print('pangkat', pangkat)
+        # print('pangkat_neg', pangkat_neg)
+        # print('wordfreq_test_in_pos', wordfreq_test_in_pos)
+        # print('wordfreq_test_in_neg', wordfreq_test_in_neg)
+        # print('cp_pos_list', cp_pos_list)
+        # print('cp_neg_list', cp_neg_list)
+        # print('result', result)
+        # print('result_neg', result_neg)
+        print('result_final_pos', result_final_pos)
+        print('result_final_neg', result_final_neg)
     context['cp_neg_list'] = cp_neg_list
 
-    # hasil akhir positif
-    product_cp_pos = 1
-    cp_words_pos = {}
-    i = 0
-    while i < len(cp_pos_list):
-        cp_words_pos.append(cp_pos_list[i]['cp'] ** wordfreq_testing_list[i]['cp']) #cp**jumlah_kata
-        i += 1
-    for x in cp_words_pos:
-        product_cp_pos *=x #pengalian semua objek dalam list
-    hasil_pos = selected_buku.priors_pos * product_cp_pos #pengalian hasil pengalian semua objek dalam list dengan priors
-    context['hasil_pos'] = float(hasil_pos)
-
-    # # save hasil akhir positif to django model field
-    # selected_hasil = Buku.objects.get(id=int(buku_id))
-    # selected_hasil.hasil_pos = hasil_pos
-    # selected_hasil.save()
-
-    # hasil akhir negatif
-    # product_cp_neg = 1
-    # cp_words_neg = []
-    # i = 0
-    # while i < len(cp_neg_list):
-    #     cp_words_neg.append(cp_neg_list[i]['cp'] ** wordfreq_testing_list[i]['cp']) #cp**jumlah_kata
-    #     i += 1
-    # for x in cp_words_neg:
-    #     product_cp_neg *=x #pengalian semua objek dalam list
-    # hasil_neg = selected_buku.priors_neg * product_cp_neg #pengalian hasil pengalian semua objek dalam list dengan priors
-    # context['hasil_neg'] = hasil_neg
-    #
-    # # save hasil akhir negatif to django model field
-    # selected_hasil = Buku.objects.get(id=int(buku_id))
-    # selected_hasil.hasil_neg = hasil_neg
-    # selected_hasil.save()
+    # save hasil akhir negatif to django model field
+    selected_hasil = Buku.objects.get(id=int(buku_id))
+    selected_hasil.hasil_neg = result_final_neg
+    selected_hasil.save()
 
     return render(request, 'classifyme/textmining.html', context)
 
