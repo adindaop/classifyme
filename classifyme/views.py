@@ -1,7 +1,5 @@
 import csv
 from django.shortcuts import render, get_object_or_404
-# from django.contrib.auth import authenticate, login, logout
-# from django.contrib.auth.decorators import login_required
 from .forms import BukuForm
 from .models import Buku
 from django.http import HttpResponseRedirect, HttpResponse
@@ -9,9 +7,7 @@ from django.shortcuts import redirect
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-# from nltk.util import ngrams
 import collections
-# from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 def admin(request):
     return render(request, admin.site.urls, {})
@@ -41,48 +37,24 @@ def textmining(request, buku_id):
     selected_buku = Buku.objects.get(id=int(buku_id))
     context['buku'] = selected_buku
 
-    #print(selected_buku.training_set_positif)
     training_set_positif = ''
     with open('media/{}'.format(selected_buku.training_set_positif.file)) as csvfile:
-    # with open('media/{}'.format(selected_resensi.training_set_positif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         total_row_positif = 0
         for row in csvreader:
             total_row_positif += 1
             training_set_positif += row['Review']
-            # jumlah_positif = len(ulasan_positif.split()) -> jumlah kata dalam ulasan positif (raw)
     context['total_row_positif'] = total_row_positif
     context['training_set_positif'] = training_set_positif
-    # context['jumlah_positif'] = jumlah_positif
 
-    # mengubah semua kata menjadi lowercase
-    case_folding_pos = training_set_positif.lower()
-    context['case_folding_pos'] = case_folding_pos
-
-    # menghilangkan imbuhan kata (try Sastrawi)
-    # factory = StemmerFactory()
-    # stemmer = factory.create_stemmer()
-    # hasil_stemming_pos = stemmer.stem(case_folding_pos)
-    # context['hasil_stemming_pos'] = hasil_stemming_pos
-
-    # memisahkan kalimat menjadi kata
-    tokenized_words_positif = word_tokenize(case_folding_pos)
-    context['tokenized_words_positif'] = tokenized_words_positif
-
-    # menghilangkan kata yang tidak perlu
-    stop_words = set(stopwords.words("bahasa"))
-    filtered_sentence_positif = []
-    for w in tokenized_words_positif:
-        if w not in stop_words:
-            filtered_sentence_positif.append(w)
-    context['filtered_sentence_positif'] = filtered_sentence_positif
-
-    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
-    word_list = set(stopwords.words("wordlist"))
     filtered_word_positif = []
-    for a in filtered_sentence_positif:
-        if a in word_list:
-            filtered_word_positif.append(a)
+    stop_words = set(stopwords.words("bahasa"))
+    word_list = set(stopwords.words("wordlist"))
+    case_folding_pos = training_set_positif.lower() #case folding
+    tokenized_words_positif = word_tokenize(case_folding_pos) #tokenizing
+    for w in tokenized_words_positif:
+        if w not in stop_words and w in word_list: #filtering
+            filtered_word_positif.append(w)
     context['filtered_word_positif'] = filtered_word_positif
 
     # count(w, training_pos)
@@ -96,48 +68,24 @@ def textmining(request, buku_id):
     jumlah_kata_positif = len(filtered_word_positif)
     context['jumlah_kata_positif'] = jumlah_kata_positif
 
-    #print(selected_buku.training_set_negatif)
     training_set_negatif = ''
     with open('media/{}'.format(selected_buku.training_set_negatif.file)) as csvfile:
-    # with open('media/{}'.format(selected_resensi.training_set_negatif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         total_row_negatif = 0
         for row in csvreader:
             total_row_negatif += 1
             training_set_negatif += row['Review']
-            # jumlah_negatif = len(ulasan_negatif.split()) -> jumlah kata dalam ulasan negatif (raw)
     context['total_row_negatif'] = total_row_negatif
     context['training_set_negatif'] = training_set_negatif
-    # context['jumlah_negatif'] = jumlah_negatif
 
-    # mengubah semua kata menjadi lowercase
-    case_folding_neg = training_set_negatif.lower()
-    context['case_folding_neg'] = case_folding_neg
-
-    # menghilangkan imbuhan kata (try Sastrawi)
-    # factory = StemmerFactory()
-    # stemmer = factory.create_stemmer()
-    # hasil_stemming_neg = stemmer.stem(training_set_negatif)
-    # context['hasil_stemming_neg'] = hasil_stemming_neg
-
-    # memisahkan kalimat menjadi kata
-    tokenized_words_negatif = word_tokenize(case_folding_neg)
-    context['tokenized_words_negatif'] = tokenized_words_negatif
-
-    # menghilangkan kata yang tidak perlu
-    stop_words = set(stopwords.words("bahasa"))
-    filtered_sentence_negatif = []
-    for w in tokenized_words_negatif:
-        if w not in stop_words:
-            filtered_sentence_negatif.append(w)
-    context['filtered_sentence_negatif'] = filtered_sentence_negatif
-
-    # menampilkan kata ungkapan yang merujuk ke ungkapan positif dan negatif
-    word_list = set(stopwords.words("wordlist"))
     filtered_word_negatif = []
-    for a in filtered_sentence_negatif:
-        if a in word_list:
-            filtered_word_negatif.append(a)
+    stop_words = set(stopwords.words("bahasa"))
+    word_list = set(stopwords.words("wordlist"))
+    case_folding_neg = training_set_negatif.lower() #case folding
+    tokenized_words_negatif = word_tokenize(case_folding_neg) #tokenizing
+    for w in tokenized_words_negatif:
+        if w not in stop_words and w in word_list: #filtering
+            filtered_word_negatif.append(w)
     context['filtered_word_negatif'] = filtered_word_negatif
 
     # count(w, training_neg)
@@ -201,12 +149,11 @@ def textmining(request, buku_id):
     filtered_word_testing = []
     stop_words = set(stopwords.words("bahasa"))
     word_list = set(stopwords.words("wordlist"))
-    case_folding_test = testing_set.lower() #mengubah semua kata menjadi lowercase
-    tokenized_words_testing = word_tokenize(case_folding_test) #memisahkan kalimat menjadi kata
+    case_folding_test = testing_set.lower() #case folding
+    tokenized_words_testing = word_tokenize(case_folding_test) #tokenizing
     for w in tokenized_words_testing:
         if w not in stop_words and w in word_list: #filtering
             filtered_word_testing.append(w)
-            # print('filtered_word_testing', filtered_word_testing)
     context['filtered_word_testing'] = filtered_word_testing
 
     # count(w, testing)
@@ -214,7 +161,6 @@ def textmining(request, buku_id):
     wordfreq_testing_list = []
     for w, freq_test in sorted(word_counts.items()):
         wordfreq_testing_list.append({'w': w, 'freq_test': freq_test})
-    # print('wordfreq_testing_list', wordfreq_testing_list)
     context['wordfreq_testing_list'] = wordfreq_testing_list
 
     # count(w,positif) + 1
@@ -277,19 +223,6 @@ def textmining(request, buku_id):
                 for pangkat_neg in cp_neg_list:
                     result_neg = result_neg * cp_neg_list[pangkat_neg] #mengalikan semua value
                     result_final_neg = selected_buku.priors_neg * result_neg
-        print('hasil', hasil)
-        # print('hasil_neg', hasil_neg)
-        # print('pemangkat', pemangkat)
-        # print('pangkat', pangkat)
-        # print('pangkat_neg', pangkat_neg)
-        # print('wordfreq_test_in_pos', wordfreq_test_in_pos)
-        # print('wordfreq_test_in_neg', wordfreq_test_in_neg)
-        # print('cp_pos_list', cp_pos_list)
-        # print('cp_neg_list', cp_neg_list)
-        # print('result', result)
-        # print('result_neg', result_neg)
-        # print('result_final_pos', result_final_pos)
-        # print('result_final_neg', result_final_neg)
     context['result_final_neg'] = result_final_neg
 
     # save hasil akhir to django model field
