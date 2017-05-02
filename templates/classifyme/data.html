@@ -13,7 +13,7 @@
           <br>
           <br>
           {% for q in buku %}
-            <p style="margin-left: 40px;"><a href="{% url 'classifyme:textmining' q.id%}">{{q.judul}}</a></p>
+          <p style="margin-left: 40px;"><a href="{% url 'classifyme:textmining' q.id%}">{{q.judul}}</a></p>
           {% endfor %}
           <br>
           <br>

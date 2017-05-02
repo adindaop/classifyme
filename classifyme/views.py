@@ -1,19 +1,17 @@
 import csv
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth import authenticate, login, logout
+# from django.contrib.auth.decorators import login_required
 from .forms import BukuForm
 from .models import Buku
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 import nltk
-from nltk.tokenize import word_tokenize, regexp_tokenize
+from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-from nltk.util import ngrams
-import operator
-import functools
+# from nltk.util import ngrams
 import collections
-from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+# from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 def admin(request):
     return render(request, admin.site.urls, {})
@@ -46,6 +44,7 @@ def textmining(request, buku_id):
     #print(selected_buku.training_set_positif)
     training_set_positif = ''
     with open('media/{}'.format(selected_buku.training_set_positif.file)) as csvfile:
+    # with open('media/{}'.format(selected_resensi.training_set_positif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         total_row_positif = 0
         for row in csvreader:
@@ -93,11 +92,6 @@ def textmining(request, buku_id):
         wordfreq_positif_list.append({'w': w, 'cp': cp})
     context['wordfreq_positif_list'] = wordfreq_positif_list
 
-    # save preprocessing positif result to django model field
-    selected_preprocessing = Buku.objects.get(id=int(buku_id))
-    selected_preprocessing.hasil_preprocessing_pos = filtered_word_positif
-    selected_preprocessing.save()
-
     # count(positif) / (untuk FreqDist's total outcomes)
     jumlah_kata_positif = len(filtered_word_positif)
     context['jumlah_kata_positif'] = jumlah_kata_positif
@@ -105,6 +99,7 @@ def textmining(request, buku_id):
     #print(selected_buku.training_set_negatif)
     training_set_negatif = ''
     with open('media/{}'.format(selected_buku.training_set_negatif.file)) as csvfile:
+    # with open('media/{}'.format(selected_resensi.training_set_negatif.file)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         total_row_negatif = 0
         for row in csvreader:
@@ -152,11 +147,6 @@ def textmining(request, buku_id):
         wordfreq_negatif_list.append({'w': w, 'cp': cp})
     context['wordfreq_negatif_list'] = wordfreq_negatif_list
 
-    # save preprocessing negatif result to django model field
-    selected_preprocessing = Buku.objects.get(id=int(buku_id))
-    selected_preprocessing.hasil_preprocessing_neg = filtered_word_negatif
-    selected_preprocessing.save()
-
     # count(negatif) / (untuk FreqDist's total outcomes)
     jumlah_kata_negatif = len(filtered_word_negatif)
     context['jumlah_kata_negatif'] = jumlah_kata_negatif
@@ -199,9 +189,13 @@ def textmining(request, buku_id):
     # print(selected_buku.testing_set)
     testing_set = ''
     with open('media/{}'.format(selected_buku.testing_set)) as csvfile:
+    # with open('media/{}'.format(selected_resensi.testing_set)) as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
+        total_row_testing = 0
         for row in csvreader:
+            total_row_testing += 1
             testing_set += row['Review']
+    print('total_row_testing', total_row_testing)
     context['testing_set'] = testing_set
 
     filtered_word_testing = []
@@ -212,7 +206,7 @@ def textmining(request, buku_id):
     for w in tokenized_words_testing:
         if w not in stop_words and w in word_list: #filtering
             filtered_word_testing.append(w)
-            print('filtered_word_testing', filtered_word_testing)
+            # print('filtered_word_testing', filtered_word_testing)
     context['filtered_word_testing'] = filtered_word_testing
 
     # count(w, testing)
@@ -220,7 +214,7 @@ def textmining(request, buku_id):
     wordfreq_testing_list = []
     for w, freq_test in sorted(word_counts.items()):
         wordfreq_testing_list.append({'w': w, 'freq_test': freq_test})
-    print('wordfreq_testing_list', wordfreq_testing_list)
+    # print('wordfreq_testing_list', wordfreq_testing_list)
     context['wordfreq_testing_list'] = wordfreq_testing_list
 
     # count(w,positif) + 1
@@ -260,16 +254,11 @@ def textmining(request, buku_id):
                 pemangkat = item_testing['w'], item_testing['freq_test'], hasil #memanggil pangkat untuk setiap kata
                 pangkat = hasil ** item_testing['freq_test'] #memangkatkan cp setiap kata dengan jumlah kata dalam testing set
                 cp_pos_list[w] = pangkat
-        result = 1
-        for pangkat in cp_pos_list:
-            result = result * cp_pos_list[pangkat] #mengalikan semua value
-            result_final_pos = selected_buku.priors_pos * result
-    context['cp_pos_list'] = cp_pos_list
-
-    # save hasil akhir positif to django model field
-    selected_hasil = Buku.objects.get(id=int(buku_id))
-    selected_hasil.hasil_pos = result_final_pos
-    selected_hasil.save()
+                result = 1
+                for pangkat in cp_pos_list:
+                    result = result * cp_pos_list[pangkat] #mengalikan semua value
+                    result_final_pos = selected_buku.priors_pos * result
+    context['result_final_pos'] = result_final_pos
 
     # perhitungan klasifikasi negatif
     cp_neg_list = {}
@@ -288,7 +277,7 @@ def textmining(request, buku_id):
                 for pangkat_neg in cp_neg_list:
                     result_neg = result_neg * cp_neg_list[pangkat_neg] #mengalikan semua value
                     result_final_neg = selected_buku.priors_neg * result_neg
-        # print('hasil', hasil)
+        print('hasil', hasil)
         # print('hasil_neg', hasil_neg)
         # print('pemangkat', pemangkat)
         # print('pangkat', pangkat)
@@ -299,12 +288,13 @@ def textmining(request, buku_id):
         # print('cp_neg_list', cp_neg_list)
         # print('result', result)
         # print('result_neg', result_neg)
-        print('result_final_pos', result_final_pos)
-        print('result_final_neg', result_final_neg)
-    context['cp_neg_list'] = cp_neg_list
+        # print('result_final_pos', result_final_pos)
+        # print('result_final_neg', result_final_neg)
+    context['result_final_neg'] = result_final_neg
 
-    # save hasil akhir negatif to django model field
+    # save hasil akhir to django model field
     selected_hasil = Buku.objects.get(id=int(buku_id))
+    selected_hasil.hasil_pos = result_final_pos
     selected_hasil.hasil_neg = result_final_neg
     selected_hasil.save()
 
