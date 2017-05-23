@@ -5,19 +5,28 @@
   <div class="row">
     <div class="col-md-12">
 
-      <div class="navbar" style="margin-left: 40px;">
-        <a href="{% url 'classifyme:input' %}" button type="button" class="btn btn-warning btn-sm">Tambah Data</a>
+      <div class="navbar">
+        <a href="{% url 'classifyme:input' %}" button type="button" class="btn btn-primary">Tambah Data</a>
       </div>
 
-          <h4 style="margin-left: 40px; border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Daftar Buku</h4>
-          <br>
-          <br>
+          <h4 style="border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Daftar Buku</h4>
+
+          <table class="table">
+            <thead>
+              <th>Data</th>
+              <th>Aksi</th>
+            </thead>
+          <tbody>
           {% for q in buku %}
-          <p style="margin-left: 40px;"><a href="{% url 'classifyme:textmining' q.id%}">{{q.judul}}</a></p>
+          <tr>
+            <td><p><a href="{% url 'classifyme:textmining' q.id%}">{{q.judul}}</a></p></td>
+            <td><a href="{% url 'classifyme:edit_data' q.id %}" class="save btn btn-warning btn-sm" role="button">Ubah</a></td>
+          </tr>
           {% endfor %}
-          <br>
-          <br>
-          <br>
+          <br><br><br>
+
+          </tbody>
+        </table>
 
     </div>
   </div>

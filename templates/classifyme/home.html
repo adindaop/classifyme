@@ -20,11 +20,11 @@
       <div class="tentang">
         <h4 style="background-color: lightgrey; font-size: 20px; padding: 5px;">Petunjuk Penggunaan</h4>
         <ol class="cara">
-          <li id="isi">Untuk menggunakan aplikasi, klik tombol "Mulai" yang ada pada bagian paling bawah halaman ini.</br></li>
-          <li id="isi">Masukkan data buku, pilih <em>training set</em>, dan unggah file <em>testing set</em> berformat .csv dengan delimiter titik koma (;).</br></li>
-          <li id="isi">Data yang sudah dimasukkan akan tampil. Pilih buku yang akan diproses.</br></li>
-          <li id="isi">Klik tombol "Proses" di bagian bawah halaman untuk melakukan proses klasifikasi.</br></li>
-          <li id="isi">Setelah hasil klasifikasi ditampilkan, klik tombol "Selesai".</br></li>
+          <li id="isi">Untuk menggunakan aplikasi, klik tombol "Mulai" yang ada pada bagian paling bawah halaman ini.<br></li>
+          <li id="isi">Masukkan data buku, pilih <em>training set</em>, dan unggah file <em>testing set</em> berekstensi .csv dengan delimiter titik koma (;).<br></li>
+          <li id="isi">Data yang sudah dimasukkan akan tampil. Pilih buku yang akan diproses.<br></li>
+          <li id="isi">Klik tombol "Proses" di bagian bawah halaman untuk melakukan proses klasifikasi.<br></li>
+          <li id="isi">Setelah hasil klasifikasi ditampilkan, klik tombol "Selesai".<br><br></li>
         </ol>
       </div>
 
@@ -33,10 +33,8 @@
 </div>
 
     <div class="button">
-      <a href="{% url 'classifyme:input' %}" class="btn btn-warning" role="button">Mulai</a>
+      <a href="{% url 'classifyme:input' %}" class="btn btn-primary" role="button" style="margin-left: 625px">Mulai</a>
     </div>
-    <br>
-    <br>
-    <br>
+    <br><br><br>
 
 {% endblock %}

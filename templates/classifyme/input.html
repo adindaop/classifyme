@@ -5,27 +5,19 @@
   <div class="row">
     <div class="col-md-12">
 
-      <div>
-        <ul style="list-style-type: none;">
-          <li>
-            <div class="navbar">
-              <a href="{% url 'classifyme:home' %}" button type="button" class="btn btn-warning btn-sm">Beranda</a>
-              <a href="{% url 'classifyme:data' %}" button type="button" class="btn btn-warning btn-sm">Lihat Data</a>
-            </div>
-          </li>
-        </ul>
+      <div class="navbar">
+        <a href="{% url 'classifyme:home' %}" button type="button" class="btn btn-primary">Beranda</a>
+        <a href="{% url 'classifyme:data' %}" button type="button" class="btn btn-primary">Lihat Data</a>
+        <br>
       </div>
 
-      <h4 style="margin-left: 45px; border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Input Buku</h4>
-      <br>
-      <br>
+      <h4 style="border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Input Buku</h4><br>
+
       <form method="POST" enctype="multipart/form-data" class="buku-form">{% csrf_token %}
         {{ form.as_p }}
-        <h6 style="margin-left: 45px; font-size: 10px; color: grey;">Unggah file dengan format .csv</h5>
-        <button type="submit" class="save btn btn-default btn-sm" style="margin-left: 520px"><a href="{% url 'classifyme:data' %}">Simpan</a></button>
-        <br>
-        <br>
-        <br>
+        <h6 style="font-size: 10px; color: grey;">Unggah file dengan format .csv</h5>
+        <button type="submit" class="save btn btn-default" style="margin-left: 500px"><a href="{% url 'classifyme:data' %}">Simpan</a></button>
+        <br><br><br>
       </form>
 
     </div>

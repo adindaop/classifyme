@@ -5,17 +5,23 @@
   <div class="row">
     <div class="col-md-12">
 
-      <h4 style="margin-left: 40px; border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Hasil Klasifikasi</h4>
+      <h4 style="border-bottom: 6px solid grey; background-color: lightgrey; padding: 5px;">Hasil Klasifikasi</h4>
       <br>
 
-      <h5 style="text-align: center; font-size: 20px;">Testing set dari buku "{{ buku.judul }}" termasuk dalam kelas : <strong>{{ hasil_akhir }}<strong></h5>
+      {% if hasil_akhir == "Positif" or hasil_akhir == "Negatif" %}
+      <h5 style="text-align: center; font-size: 20px;">Hasil klasifikasi dari "{{ buku.judul }}" adalah <strong>{{ hasil_akhir }}</strong></h5>
       <br>
-
       <h6 style="text-align: center; color: grey;">Klik tombol Selesai untuk menyimpan hasil klasifikasi dan keluar dari aplikasi.</h5>
-      <a href="{% url 'classifyme:input' %}" class="save btn btn-warning" role="button" style="margin-left: 515px;">Selesai</a>
+      <a href="{% url 'classifyme:input' %}" class="save btn btn-primary" role="button" style="margin-left: 525px;">Selesai</a>
+      <br><br><br>
+      {% else %}
+      <h5 style="text-align: center; font-size: 20px;"><strong>{{ hasil_akhir }}</strong></h5>
       <br>
-      <br>
-      <br>
+      <h6 style="text-align: center; color: grey;">Kurangi data <em>testing set</em> pada file Anda kemudian unggah kembali.</h5>
+      <a href="{% url 'classifyme:input' %}" class="save btn btn-primary" role="button" style="margin-left: 525px;">Ulangi</a>
+      <br><br><br>
+      {% endif %}
+
     </div>
   </div>
 </div>
