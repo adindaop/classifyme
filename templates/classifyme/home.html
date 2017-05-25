@@ -1,4 +1,5 @@
 {% extends 'classifyme/base.html' %}
+{% load static %}
 {% block content %}
 
 <div class="content container">
@@ -13,8 +14,8 @@
       <div class="tentang">
         <h4 style="background-color: lightgrey; font-size: 20px; padding: 5px;">Tentang Aplikasi</h4>
         <p id="isi">ClassifyMe! adalah aplikasi yang dibuat khusus untuk mengklasifikasikan resensi buku ke dalam resensi positif dan negatif dengan menggunakan teknik <em>preprocessing</em> pada <em>text mining</em> dan Algoritma <em>Naive Bayes</em>.</p><br>
-        {% load static %}
-        <p id="isi">Aplikasi ini dibuat oleh Adinda Octadia Putri, mahasiswi Universitas Gunadarma angkatan 2013 sebagai syarat dalam mencapai gelar Sarjana Strata Satu (S1).</p>
+        <img src="{% static 'picture/adinda.jpg' %}" class="img-circle" width="150" height="150"/><br><br>
+        <p id="isi">Aplikasi ini dibuat oleh Adinda Octadia Putri, mahasiswi Universitas Gunadarma Jurusan Sistem Informasi angkatan 2013 sebagai syarat dalam mencapai gelar Sarjana Strata Satu (S1).</p><br><br>
       </div>
 
       <div class="tentang">
