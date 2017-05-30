@@ -63,7 +63,7 @@ def textmining(request, buku_id):
     #preprocessing
     filtered_word_positif = []
     stop_words = set(stopwords.words("bahasa"))
-    word_list = set(stopwords.words("wordlist"))
+    word_list = set(stopwords.words("wordlist_pos"))
     case_folding_pos = training_set_positif.lower() #case folding
     tokenized_words_positif = word_tokenize(case_folding_pos) #tokenizing
     for w in tokenized_words_positif:
@@ -98,7 +98,7 @@ def textmining(request, buku_id):
     #preprocessing
     filtered_word_negatif = []
     stop_words = set(stopwords.words("bahasa"))
-    word_list = set(stopwords.words("wordlist"))
+    word_list = set(stopwords.words("wordlist_neg"))
     case_folding_neg = training_set_negatif.lower() #case folding
     tokenized_words_negatif = word_tokenize(case_folding_neg) #tokenizing
     for w in tokenized_words_negatif:
@@ -123,11 +123,11 @@ def textmining(request, buku_id):
     context['total_ulasan'] = total_ulasan
 
     #priors positif
-    priors_pos = float(total_row_positif / total_ulasan)
+    priors_pos = total_row_positif / total_ulasan
     context['priors_pos'] = priors_pos
 
     #priors negatif
-    priors_neg = float(total_row_negatif / total_ulasan)
+    priors_neg = total_row_negatif / total_ulasan
     context['priors_neg'] = priors_neg
 
     #menyimpan hasil priors ke django model field
@@ -201,7 +201,7 @@ def textmining(request, buku_id):
         if item['kata'] not in cp_pos_list:
             pembilang = item['cp']
             penyebut = jumlah_kata_positif + wordfreq_sample_total
-            hasil = float(pembilang/penyebut)
+            hasil = pembilang/penyebut
             cp_pos_list.append({'kata': item['kata'], 'hasil': hasil})
     print('CP_POS_LIST', cp_pos_list)
     context['cp_pos_list'] = cp_pos_list
@@ -238,7 +238,7 @@ def textmining(request, buku_id):
         if item['kata'] not in cp_neg_list:
             pembilang = item['cp']
             penyebut = jumlah_kata_negatif + wordfreq_sample_total
-            hasil = float(pembilang/penyebut)
+            hasil = pembilang/penyebut
             cp_neg_list.append({'kata': item['kata'], 'hasil': hasil})
     print('CP_NEG_LIST', cp_neg_list)
     context['cp_neg_list'] = cp_neg_list
