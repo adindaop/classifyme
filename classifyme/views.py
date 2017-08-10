@@ -60,7 +60,7 @@ def textmining(request, buku_id):
     context['total_row_positif'] = total_row_positif
     context['training_set_positif'] = training_set_positif
 
-    #preprocessing
+    #textmining
     filtered_word_positif = []
     stop_words = set(stopwords.words("bahasa"))
     word_list = set(stopwords.words("wordlist_pos"))
@@ -95,7 +95,7 @@ def textmining(request, buku_id):
     context['total_row_negatif'] = total_row_negatif
     context['training_set_negatif'] = training_set_negatif
 
-    #preprocessing
+    #textmining
     filtered_word_negatif = []
     stop_words = set(stopwords.words("bahasa"))
     word_list = set(stopwords.words("wordlist_neg"))
@@ -161,7 +161,7 @@ def textmining(request, buku_id):
     print('total_row_testing', total_row_testing)
     context['testing_set'] = testing_set
 
-    #preprocessing
+    #textmining
     filtered_word_testing = []
     stop_words = set(stopwords.words("bahasa"))
     word_list = set(stopwords.words("wordlist"))
@@ -215,7 +215,7 @@ def textmining(request, buku_id):
         i += 1
     for x in cp_words_pos:
         product_cp_pos *=x #pengalian semua objek dalam list
-    hasil_pos = selected_buku.priors_pos * product_cp_pos #pengalian hasil keseluruhan dengan priors
+    hasil_pos = priors_pos * product_cp_pos #pengalian hasil keseluruhan dengan priors
     print('HASIL_POS', hasil_pos)
     context['hasil_pos'] = hasil_pos
 
@@ -252,7 +252,7 @@ def textmining(request, buku_id):
         i += 1
     for x in cp_words_neg:
         product_cp_neg *=x #pengalian semua objek dalam list
-    hasil_neg = selected_buku.priors_neg * product_cp_neg #pengalian hasil keseluruhan dengan priors
+    hasil_neg = priors_neg * product_cp_neg #pengalian hasil keseluruhan dengan priors
     print('HASIL_NEG', hasil_neg)
     context['hasil_neg'] = hasil_neg
 
